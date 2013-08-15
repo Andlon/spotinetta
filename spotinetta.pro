@@ -8,7 +8,26 @@ QT       -= gui
 
 TARGET = spotinetta
 TEMPLATE = lib
-CONFIG += staticlib
+CONFIG += staticlib c++11
+
+RCC_DIR = "build/rcc"
+UI_DIR = "build/uic"
+MOC_DIR = "build/moc"
+OBJECTS_DIR = "build/obj"
+
+CONFIG(debug, debug|release) {
+    DESTDIR = "debug"
+}
+CONFIG(release, debug|release) {
+    DESTDIR = "release"
+}
+
+INCLUDEPATH -= "$$PWD"
+INCLUDEPATH += "$$PWD/include"
+win32:INCLUDEPATH += "$$(LIBSPOTIFY_PATH)/include"
+
+win32:LIBS += -L$$(LIBSPOTIFY_PATH)/lib -llibspotify
+unix:LIBS += -lspotify
 
 SOURCES += \
     src/session.cpp \

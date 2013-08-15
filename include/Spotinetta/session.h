@@ -48,6 +48,12 @@ struct SessionConfig {
 class Session : public QObject {
     Q_OBJECT
 
+    Q_ENUMS(ConnectionState)
+    Q_ENUMS(PlaybackState)
+
+    Q_PROPERTY(ConnectionState connectionState READ connectionState NOTIFY connectionStateChanged)
+    Q_PROPERTY(PlaybackState playbackState READ playbackState NOTIFY playbackStateChanged)
+
 public:
     enum class ConnectionState {
         LoggedOut = SP_CONNECTION_STATE_LOGGED_OUT,
@@ -74,6 +80,10 @@ public:
 
 signals:
     void connectionStateChanged();
+    void playbackStateChanged();
+
+    void metadataUpdated();
+
     void loggedIn();
     void loggedOut();
 
@@ -89,6 +99,9 @@ private:
     ApplicationKey              m_key;
     SessionConfig               m_config;
     Error                       m_error;
+
+    ConnectionState             m_connectionState;
+    PlaybackState               m_playbackState;
 
 };
 

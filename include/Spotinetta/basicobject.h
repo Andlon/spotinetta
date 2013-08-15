@@ -15,7 +15,7 @@ private:
 public:
     BasicObject() : m_handle(0) { }
     BasicObject(HandleType * handle, bool increment = true);
-    BasicObject(const BasicObject &other) : BasicObject(other.handle()) { }
+    BasicObject(const BasicObject &other);
     ~BasicObject();
 
     bool isValid() const;
@@ -60,6 +60,14 @@ inline BasicObject<HandleType, RefFunc, DerefFunc>::BasicObject(HandleType * han
     // Increment reference count if required
     if (increment)
         ref();
+}
+
+template <typename HandleType, sp_error RefFunc(HandleType *), sp_error DerefFunc(HandleType *)>
+inline BasicObject<HandleType, RefFunc, DerefFunc>::BasicObject(const BasicObject &other)
+    :   m_handle(other.m_handle)
+{
+    // Increment reference count
+    ref();
 }
 
 template <typename HandleType, sp_error RefFunc(HandleType *), sp_error DerefFunc(HandleType *)>

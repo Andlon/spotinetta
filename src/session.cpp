@@ -128,12 +128,12 @@ void Session::customEvent(QEvent * e)
 {
     // Only Spotinetta::Event events should be sent to Session
     Event::Type t = static_cast<Spotinetta::Event::Type>(e->type());
-    Event * e = static_cast<Event *>(e);
+    Event * event = static_cast<Event *>(e);
 
     switch (t)
     {
     case (Event::Type::LoginEvent):
-        if (e->error() == Error::Ok)
+        if (event->error() == Error::Ok)
         {
             emit loggedIn();
         }
