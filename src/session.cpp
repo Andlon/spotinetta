@@ -4,6 +4,8 @@
 
 #include <QCoreApplication>
 #include <QtAlgorithms>
+#include <QTimer>
+#include <QDebug>
 
 namespace Spotinetta {
 
@@ -38,7 +40,7 @@ QVector<uint8_t> ApplicationKey::data() const
 }
 
 Session::Session(const SessionConfig &config, QObject *parent)
-    :   QObject(parent)
+    :   QObject(parent), m_processTimer(new QTimer(this))
 {
     m_config = config;
 
@@ -90,7 +92,18 @@ Session::Session(const SessionConfig &config, QObject *parent)
     if (m_error == Error::Ok)
     {
         m_handle.reset(session, &sp_session_release);
+        processEvents();
     }
+}
+
+void Session::processEvents()
+{
+    int next = 0;
+    do {
+        sp_session_process_events(handle(), &next);
+    } while (next == 0);
+
+    m_processTimer->start(next);
 }
 
 bool Session::isValid() const
@@ -179,7 +192,7 @@ void Session::customEvent(QEvent * e)
         }
         else
         {
-            // Login unsuccessful
+            emit loginFailed(event->error());
         }
         break;
     case (Event::Type::LogoutEvent):
@@ -188,8 +201,27 @@ void Session::customEvent(QEvent * e)
     case (Event::Type::ConnectionStateUpdatedEvent):
         emit connectionStateChanged();
         break;
+    case (Event::Type::MetadataUpdatedEvent):
+        emit metadataUpdated();
+        break;
+    case (Event::Type::EndOfTrackEvent):
+        emit endOfTrack();
+        break;
+    case (Event::Type::ConnectionErrorEvent):
+        emit connectionError(event->error());
+        break;
+    case (Event::Type::NotifyMainThreadEvent):
+        processEvents();
+        break;
+    case (Event::Type::LogEvent):
+        emit log(QString::fromUtf8(event->data()));
+        break;
+    case (Event::Type::StreamingErrorEvent):
+        emit streamingError(event->error());
+        break;
 
     default:
+        qWarning() << "Spotinetta::Session received unhandled event.";
         break;
     }
 }
@@ -230,8 +262,8 @@ void SP_CALLCONV handleMetadataUpdated(sp_session * s) {
     QCoreApplication::postEvent(session, new Event(Event::Type::MetadataUpdatedEvent));
 }
 
-int  SP_CALLCONV handleMusicDelivery(sp_session *, const sp_audioformat *, const void *, int) {
-    return 0;
+int  SP_CALLCONV handleMusicDelivery(sp_session *, const sp_audioformat *, const void *, int frameCount) {
+    return frameCount; // Temporarily consume all frames
 }
 
 void SP_CALLCONV handleStreamingError(sp_session * s, sp_error e) {

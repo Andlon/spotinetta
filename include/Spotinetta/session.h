@@ -9,6 +9,9 @@
 
 #include <cstdint>
 
+// Forward declarations
+class QTimer;
+
 namespace Spotinetta {
 
 class ApplicationKey {
@@ -50,11 +53,14 @@ class Session : public QObject {
 
     Q_ENUMS(ConnectionState)
     Q_ENUMS(PlaybackState)
+    Q_ENUMS(Error)
 
     Q_PROPERTY(ConnectionState connectionState READ connectionState NOTIFY connectionStateChanged)
     Q_PROPERTY(PlaybackState playbackState READ playbackState NOTIFY playbackStateChanged)
 
 public:
+    typedef ::Spotinetta::Error Error;
+
     enum class ConnectionState {
         LoggedOut = SP_CONNECTION_STATE_LOGGED_OUT,
         LoggedIn = SP_CONNECTION_STATE_LOGGED_IN,
@@ -87,6 +93,11 @@ signals:
     void loggedOut();
     void endOfTrack();
 
+    void loginFailed(Error error);
+    void connectionError(Error error);
+    void streamingError(Error error);
+    void log(QString message);
+
 public slots:
     void login(const QString &username, const QString &password, bool rememberMe = false);
     void logout();
@@ -98,6 +109,9 @@ public slots:
 protected:
     void customEvent(QEvent *);
 
+private slots:
+    void processEvents();
+
 private:
     QSharedPointer<sp_session>  m_handle;
     ApplicationKey              m_key;
@@ -106,6 +120,8 @@ private:
 
     ConnectionState             m_connectionState;
     PlaybackState               m_playbackState;
+
+    QTimer *                    m_processTimer;
 
 };
 
