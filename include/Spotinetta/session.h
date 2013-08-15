@@ -85,6 +85,7 @@ signals:
 
     void loggedIn();
     void loggedOut();
+    void endOfTrack();
 
 public slots:
     void login(const QString &username, const QString &password, bool rememberMe = false);
