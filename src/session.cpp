@@ -1,4 +1,5 @@
 #include <Spotinetta/session.h>
+#include <Spotinetta/track.h>
 #include "events.h"
 
 #include <QCoreApplication>
@@ -122,6 +123,45 @@ void Session::logout()
 {
     if (isValid())
         sp_session_logout(handle());
+}
+
+bool Session::play()
+{
+    if (isValid())
+    {
+        m_error = static_cast<Error>(sp_session_player_play(handle(), true));
+
+        if (m_error == Error::Ok)
+            return true;
+    }
+
+    return false;
+}
+
+bool Session::load(const Track &track)
+{
+    if (isValid())
+    {
+        m_error = static_cast<Error>(sp_session_player_load(handle(), track.handle()));
+
+        if (m_error == Error::Ok)
+            return true;
+    }
+
+    return false;
+}
+
+bool Session::pause()
+{
+    if (isValid())
+    {
+        m_error = static_cast<Error>(sp_session_player_play(handle(), false));
+
+        if (m_error == Error::Ok)
+            return true;
+    }
+
+    return false;
 }
 
 void Session::customEvent(QEvent * e)

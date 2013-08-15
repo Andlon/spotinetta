@@ -64,7 +64,6 @@ public:
     };
 
     enum class PlaybackState {
-        Stopped,
         Playing,
         Paused
     };
@@ -90,6 +89,10 @@ signals:
 public slots:
     void login(const QString &username, const QString &password, bool rememberMe = false);
     void logout();
+
+    bool load(const Track &track);
+    bool play();
+    bool pause();
 
 protected:
     void customEvent(QEvent *);
