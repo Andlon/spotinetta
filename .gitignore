@@ -1,7 +1,8 @@
-# Ignore build, debug and release dirs
+# Ignore build, debug, release and lib dirs
 build/
 debug/
 release/
+lib/
 
 # Ignore documentation. Use doxygen to generate fresh docs instead
 doc/
@@ -9,9 +10,6 @@ doc/
 # Ignore makefile. Use qmake to generate a fresh one instead
 Makefile
 Makefile*
-
-# Ignore libspotify
-libspotify/
 
 # Ignore appkey
 appkey.c

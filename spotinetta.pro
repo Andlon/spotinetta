@@ -15,11 +15,15 @@ UI_DIR = "build/uic"
 MOC_DIR = "build/moc"
 OBJECTS_DIR = "build/obj"
 
+DESTDIR = "lib"
+
 CONFIG(debug, debug|release) {
-    DESTDIR = "debug"
+    DESTDIR = "lib"
+    TARGET = "spotinettad"
 }
 CONFIG(release, debug|release) {
-    DESTDIR = "release"
+    DESTDIR = "lib"
+    TARGET = "spotinetta"
 }
 
 INCLUDEPATH -= "$$PWD"

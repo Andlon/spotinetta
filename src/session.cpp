@@ -34,42 +34,60 @@ ApplicationKey::ApplicationKey(const uint8_t *key, size_t size)
     qCopy(key, key + size, m_data.begin());
 }
 
-QVector<uint8_t> ApplicationKey::data() const
+const uint8_t * ApplicationKey::data() const
 {
-    return m_data;
+    return m_data.constData();
+}
+
+size_t ApplicationKey::size() const
+{
+    return static_cast<size_t>(m_data.size());
 }
 
 Session::Session(const SessionConfig &config, QObject *parent)
-    :   QObject(parent), m_processTimer(new QTimer(this))
+    :   QObject(parent), m_playbackState(PlaybackState::Paused), m_processTimer(new QTimer(this))
 {
     m_config = config;
 
     sp_session_config       spconfig;
     sp_session_callbacks    callbacks;
-    sp_session *            session = 0;
+
+    sp_session * session;
 
     memset(&spconfig, 0, sizeof(sp_session_config));
     memset(&callbacks, 0, sizeof(sp_session_callbacks));
 
+    QByteArray userAgent = m_config.userAgent.toUtf8();
+    QByteArray cacheLocation = m_config.cacheLocation.toUtf8();
+    QByteArray settingsLocation = m_config.settingsLocation.toUtf8();
+    QByteArray deviceId = m_config.deviceId.toUtf8();
+    QByteArray proxy = m_config.proxy.toUtf8();
+    QByteArray proxyUsername = m_config.proxyUsername.toUtf8();
+    QByteArray proxyPassword = m_config.proxyPassword.toUtf8();
+    QByteArray tracefile = m_config.tracefile.toUtf8();
+
     // For header/lib compatibility check
     spconfig.api_version = SPOTIFY_API_VERSION;
-    // Use the userdata field to store the address of this Session object,
-    // so that we may forward events from the callbacks
+
+    //    // Use the userdata field to store the address of this Session object,
+    //    // so that we may forward events from the callbacks
     spconfig.userdata = static_cast<void *>(this);
 
-    spconfig.cache_location = config.cacheLocation.toUtf8();
-    spconfig.settings_location = config.settingsLocation.toUtf8();
-    spconfig.application_key = config.applicationKey.data().constData();
-    spconfig.application_key_size = config.applicationKey.data().size();
-    spconfig.user_agent = config.userAgent.toUtf8();
-    spconfig.device_id = config.deviceId.toUtf8();
-    spconfig.proxy = config.proxy.toUtf8();
-    spconfig.proxy_username = config.proxyUsername.toUtf8();
-    spconfig.proxy_password = config.proxyPassword.toUtf8();
-    spconfig.tracefile = config.traceFile.toUtf8();
-    spconfig.compress_playlists = config.compressPlaylists;
-    spconfig.dont_save_metadata_for_playlists = config.dontSaveMetadataForPlaylists;
-    spconfig.initially_unload_playlists = config.initiallyUnloadPlaylists;
+    spconfig.application_key = m_config.applicationKey.data();
+    spconfig.application_key_size = m_config.applicationKey.size();
+
+    spconfig.user_agent = userAgent.isEmpty() ? 0 : userAgent.constData();
+    spconfig.cache_location = cacheLocation.isEmpty() ? "" : cacheLocation.constData();
+    spconfig.settings_location = settingsLocation.isEmpty() ? "" : settingsLocation.constData();
+    spconfig.device_id = deviceId.isEmpty() ? 0 : deviceId.constData();
+    spconfig.proxy = proxy.isEmpty() ? 0 : proxy.constData();
+    spconfig.proxy_username = proxyUsername.isEmpty() ? 0 : proxyUsername.constData();
+    spconfig.proxy_password = proxyPassword.isEmpty() ? 0 : proxyPassword.constData();
+    spconfig.tracefile = tracefile.isEmpty() ? 0 : tracefile.constData();
+
+    spconfig.compress_playlists = m_config.compressPlaylists;
+    spconfig.dont_save_metadata_for_playlists = m_config.dontSaveMetadataForPlaylists;
+    spconfig.initially_unload_playlists = m_config.initiallyUnloadPlaylists;
 
     callbacks.logged_in = &handleLoggedIn;
     callbacks.logged_out = &handleLoggedOut;
@@ -124,6 +142,11 @@ sp_session * Session::handle() const
 Session::ConnectionState Session::connectionState() const
 {
     return isValid() ? static_cast<ConnectionState>(sp_session_connectionstate(handle())) : ConnectionState::Undefined;
+}
+
+Session::PlaybackState Session::playbackState() const
+{
+    return m_playbackState;
 }
 
 void Session::login(const QString &username, const QString &password, bool rememberMe)

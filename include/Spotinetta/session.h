@@ -19,7 +19,8 @@ public:
     ApplicationKey() { }
     ApplicationKey(const uint8_t * key, size_t size);
 
-    QVector<uint8_t> data() const;
+    const uint8_t * data() const;
+    size_t size() const;
 
 private:
     QVector<uint8_t> m_data;
@@ -41,7 +42,7 @@ struct SessionConfig {
     QString proxyUsername;
     QString proxyPassword;
     QString caCertsFilename;
-    QString traceFile;
+    QString tracefile;
 
     bool compressPlaylists;
     bool dontSaveMetadataForPlaylists;
@@ -117,8 +118,6 @@ private:
     ApplicationKey              m_key;
     SessionConfig               m_config;
     Error                       m_error;
-
-    ConnectionState             m_connectionState;
     PlaybackState               m_playbackState;
 
     QTimer *                    m_processTimer;
