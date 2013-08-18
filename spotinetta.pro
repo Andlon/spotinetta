@@ -42,7 +42,8 @@ SOURCES += \
     src/objects/artist.cpp \
     src/objects/album.cpp \
     src/objects/playlist.cpp \
-    src/objects/user.cpp
+    src/objects/user.cpp \
+    src/objects/playlistcontainer.cpp
 
 HEADERS += \
     include/Spotinetta/track.h \
@@ -57,4 +58,5 @@ HEADERS += \
     include/Spotinetta/album.h \
     src/events.h \
     include/Spotinetta/playlist.h \
-    include/Spotinetta/user.h
+    include/Spotinetta/user.h \
+    include/Spotinetta/playlistcontainer.h

@@ -1,5 +1,6 @@
 #include <Spotinetta/playlist.h>
 #include <Spotinetta/user.h>
+#include <Spotinetta/track.h>
 
 namespace Spotinetta {
 
