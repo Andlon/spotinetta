@@ -18,6 +18,7 @@ class AlbumBrowse;
 class Image;
 class Session;
 class Link;
+class User;
 
 typedef QList<Track>    TrackList;
 typedef QList<Album>    AlbumList;

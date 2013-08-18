@@ -22,6 +22,7 @@ public:
     Playlist(sp_playlist * playlist, bool increment = true) : BasicPlaylist(playlist, increment) { }
 
     QString name() const;
+    User owner() const;
 
     int trackCount() const;
     Track trackAt(int index) const;

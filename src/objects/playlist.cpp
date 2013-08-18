@@ -1,10 +1,16 @@
 #include <Spotinetta/playlist.h>
+#include <Spotinetta/user.h>
 
 namespace Spotinetta {
 
 QString Playlist::name() const
 {
     return isValid() ? QString::fromUtf8(sp_playlist_name(handle())) : QString();
+}
+
+User Playlist::owner() const
+{
+    return isValid() ? User(sp_playlist_owner(handle())) : User();
 }
 
 int Playlist::trackCount() const
