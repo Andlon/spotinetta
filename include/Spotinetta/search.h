@@ -43,8 +43,8 @@ public:
     ArtistList artists() const;
 
     int playlistCount() const;
-//    SpPlaylist playlistAt(int index) const;
-//    SpPlaylistList playlists() const;
+    Playlist playlistAt(int index) const;
+    PlaylistList playlists() const;
 };
 }
 

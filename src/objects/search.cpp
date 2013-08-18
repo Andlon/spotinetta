@@ -37,7 +37,7 @@ int Search::playlistCount() const
 
 Track Search::trackAt(int index) const
 {
-    return isValid() ? sp_search_track(handle(), index) : Track();
+    return isValid() ? Track(sp_search_track(handle(), index)) : Track();
 }
 
 TrackList Search::tracks() const
@@ -51,7 +51,7 @@ TrackList Search::tracks() const
 
 Album Search::albumAt(int index) const
 {
-    return isValid() ? sp_search_album(handle(), index) : Album();
+    return isValid() ? Album(sp_search_album(handle(), index)) : Album();
 }
 
 AlbumList Search::albums() const
@@ -65,7 +65,7 @@ AlbumList Search::albums() const
 
 Artist Search::artistAt(int index) const
 {
-    return isValid() ? sp_search_artist(handle(), index) : Artist();
+    return isValid() ? Artist(sp_search_artist(handle(), index)) : Artist();
 }
 
 ArtistList Search::artists() const
@@ -73,6 +73,20 @@ ArtistList Search::artists() const
     ArtistList list;
     for (int i = 0; i < artistCount(); ++i)
         list << artistAt(i);
+
+    return list;
+}
+
+Playlist Search::playlistAt(int index) const
+{
+    return isValid() ? Playlist(sp_search_playlist(handle(), index)) : Playlist();
+}
+
+PlaylistList Search::playlists() const
+{
+    PlaylistList list;
+    for (int i = 0; i < playlistCount(); ++i)
+        list << playlistAt(i);
 
     return list;
 }
