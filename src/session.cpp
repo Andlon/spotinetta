@@ -1,5 +1,6 @@
 #include <Spotinetta/session.h>
 #include <Spotinetta/track.h>
+#include <Spotinetta/image.h>
 #include "events.h"
 
 #include <QCoreApplication>
@@ -147,6 +148,18 @@ Session::ConnectionState Session::connectionState() const
 Session::PlaybackState Session::playbackState() const
 {
     return m_playbackState;
+}
+
+Image Session::createImage(const byte * id) const
+{
+    if (isValid())
+    {
+        // Make sure to _not_ increment reference count upon creation,
+        // as sp_image_create pre-increments
+        return Image(sp_image_create(handle(), id), false);
+    }
+
+    return Image();
 }
 
 void Session::login(const QString &username, const QString &password, bool rememberMe)

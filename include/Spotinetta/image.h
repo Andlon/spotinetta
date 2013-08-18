@@ -31,7 +31,6 @@ public:
 
     Image() { }
     Image(sp_image * image, bool increment = true) : BasicImage(image, increment) { }
-    Image(const Session &session, const byte * id);
 
     QByteArray data() const;
     Format format() const;

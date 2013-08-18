@@ -84,6 +84,8 @@ public:
     ConnectionState connectionState() const;
     PlaybackState   playbackState() const;
 
+    Image createImage(const byte * id) const;
+
 signals:
     void connectionStateChanged();
     void playbackStateChanged();
