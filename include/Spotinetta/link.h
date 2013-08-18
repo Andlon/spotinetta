@@ -43,7 +43,7 @@ public:
     QString uri() const;
 
     Track       track() const;
-    Image       image() const;
+    //Image       image() const;
     Artist      artist() const;
     Album       album() const;
     Playlist    playlist() const;

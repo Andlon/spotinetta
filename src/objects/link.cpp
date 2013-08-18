@@ -2,6 +2,7 @@
 #include <Spotinetta/track.h>
 #include <Spotinetta/artist.h>
 #include <Spotinetta/album.h>
+#include <Spotinetta/image.h>
 
 namespace Spotinetta {
 
@@ -19,6 +20,10 @@ Link::Link(const Album &album)
 
 Link::Link(const Track &track, int offset)
     :   BasicLink(sp_link_create_from_track(track.handle(), offset), false)
+{ }
+
+Link::Link(const Image &image)
+    :   BasicLink(sp_link_create_from_image(image.handle()), false)
 { }
 
 Link::Type Link::type() const

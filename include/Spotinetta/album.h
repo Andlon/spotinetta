@@ -22,6 +22,7 @@ class Album : public BasicAlbum {
     // which has the same name as the class containing it, which probably is a bug, since it's scoped anyway.
 
 #ifdef Q_CC_MSVC
+private:
     struct X {
         enum class Type {
             Album = SP_ALBUMTYPE_ALBUM,
@@ -56,7 +57,6 @@ public:
     Type type() const;
 
     Artist artist() const;
-    //Image cover(Image::Size size) const;
 };
 }
 
