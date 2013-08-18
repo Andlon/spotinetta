@@ -85,6 +85,7 @@ public:
     PlaybackState   playbackState() const;
 
     Image createImage(const byte * id) const;
+    Image createImageFromLink(const Link &link) const;
     Image createArtistPortrait(const Artist &artist, ImageSize size) const;
     Image createAlbumCover(const Album& album, ImageSize size) const;
 

@@ -3,6 +3,7 @@
 #include <Spotinetta/image.h>
 #include <Spotinetta/album.h>
 #include <Spotinetta/artist.h>
+#include <Spotinetta/link.h>
 #include "events.h"
 
 #include <QCoreApplication>
@@ -159,6 +160,17 @@ Image Session::createImage(const byte * id) const
         // Make sure to _not_ increment reference count upon creation,
         // as sp_image_create pre-increments
         return Image(sp_image_create(handle(), id), false);
+    }
+
+    return Image();
+}
+
+Image Session::createImageFromLink(const Link &link) const
+{
+    if (isValid() && link.isValid())
+    {
+        // Also here, make sure not to increment reference count
+        return Image(sp_image_create_from_link(handle(), link.handle()), false);
     }
 
     return Image();
