@@ -1,6 +1,10 @@
-#include "spotinettaconsole.h"
+#include "console.h"
+
+#include <Spotinetta/playlist.h>
 
 #include <iostream>
+
+namespace sp = Spotinetta;
 
 #ifdef Q_OS_WIN
 #include <Windows.h>
@@ -25,15 +29,15 @@ QTextStream & clear(QTextStream &stream)
     return stream;
 }
 
-SpotinettaConsole::SpotinettaConsole(Spotinetta::Session *session, QObject *parent)
+Console::Console(Spotinetta::Session *session, QObject *parent)
     : QObject(parent), m_session(session), in(stdin), out(stdout)
 {
     using Spotinetta::Session;
-    connect(session, &Session::loggedIn, this, &SpotinettaConsole::onLoggedIn);
-    connect(session, &Session::loginFailed, this, &SpotinettaConsole::onLoginFailed);
+    connect(session, &Session::loggedIn, this, &Console::onLoggedIn);
+    connect(session, &Session::loginFailed, this, &Console::onLoginFailed);
 }
 
-void SpotinettaConsole::start()
+void Console::start()
 {
     QString username, password;
 
@@ -49,12 +53,12 @@ void SpotinettaConsole::start()
     m_session->login(username, password);
 }
 
-void SpotinettaConsole::onLoggedIn()
+void Console::onLoggedIn()
 {
     out << "Successfully logged in. " << endl;
 }
 
-void SpotinettaConsole::onLoginFailed(Spotinetta::Error error)
+void Console::onLoginFailed(Spotinetta::Error error)
 {
     out << "Login failed. Error: " << Spotinetta::errorMessage(error) << endl;
 }

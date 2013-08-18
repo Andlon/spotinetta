@@ -155,6 +155,11 @@ Session::PlaybackState Session::playbackState() const
     return m_playbackState;
 }
 
+PlaylistContainer Session::rootContainer() const
+{
+    return m_rootContainer;
+}
+
 Image Session::createImage(const byte * id) const
 {
     if (isValid() && id != 0)
@@ -258,6 +263,7 @@ void Session::customEvent(QEvent * e)
     case (Event::Type::LoginEvent):
         if (event->error() == Error::Ok)
         {
+            m_rootContainer = PlaylistContainer(sp_session_playlistcontainer(handle()));
             emit loggedIn();
         }
         else
@@ -266,6 +272,7 @@ void Session::customEvent(QEvent * e)
         }
         break;
     case (Event::Type::LogoutEvent):
+        m_rootContainer = PlaylistContainer();
         emit loggedOut();
         break;
     case (Event::Type::ConnectionStateUpdatedEvent):

@@ -19,6 +19,11 @@ int Playlist::trackCount() const
     return isValid() ? sp_playlist_num_tracks(handle()) : 0;
 }
 
+Track Playlist::trackAt(int index) const
+{
+    return isValid() ? sp_playlist_track(handle(), index) : Track();
+}
+
 TrackList Playlist::tracks() const
 {
     TrackList list;

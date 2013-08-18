@@ -3,6 +3,9 @@
 #include "definitions.h"
 #include "error.h"
 
+// See comment in private member of Session to see why this is included
+#include "playlistcontainer.h"
+
 #include <QObject>
 #include <QSharedPointer>
 #include <QVector>
@@ -84,6 +87,8 @@ public:
     ConnectionState connectionState() const;
     PlaybackState   playbackState() const;
 
+    PlaylistContainer rootContainer() const;
+
     Image createImage(const byte * id) const;
     Image createImageFromLink(const Link &link) const;
     Image createArtistPortrait(const Artist &artist, ImageSize size) const;
@@ -124,6 +129,11 @@ private:
     SessionConfig               m_config;
     Error                       m_error;
     PlaybackState               m_playbackState;
+
+    // While we shouldn't need to store the root container,
+    // it is (atleast for now) necessary to workaround a bug that causes libspotify
+    // to crash upon logout/session release
+    PlaylistContainer           m_rootContainer;
 
     QTimer *                    m_processTimer;
 

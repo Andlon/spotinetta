@@ -6,11 +6,11 @@
 #include <QTextStream>
 #include <Spotinetta/session.h>
 
-class SpotinettaConsole : public QObject
+class Console : public QObject
 {
     Q_OBJECT
 public:
-    explicit SpotinettaConsole(Spotinetta::Session * session, QObject *parent = 0);
+    explicit Console(Spotinetta::Session * session, QObject *parent = 0);
 
     void start();
     

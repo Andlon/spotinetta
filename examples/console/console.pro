@@ -26,7 +26,7 @@ LIBS += -L$$PWD/../../lib -lspotinettad
 
 
 SOURCES += main.cpp \
-    spotinettaconsole.cpp
+    console.cpp
 
 HEADERS += \
-    spotinettaconsole.h
+    console.h

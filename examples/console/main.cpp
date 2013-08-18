@@ -3,13 +3,11 @@
 
 #include <Spotinetta/session.h>
 
-#include "spotinettaconsole.h"
+#include "console.h"
 #include "../../appkey.c"
 
 int main(int argc, char *argv[])
 {
-
-
     using namespace Spotinetta;
 
     QCoreApplication a(argc, argv);
@@ -17,12 +15,14 @@ int main(int argc, char *argv[])
     SessionConfig config;
     config.applicationKey = ApplicationKey(g_appkey, g_appkey_size);
     config.userAgent = "Spotinetta Console";
+    config.settingsLocation = "D:\\spotinetta";
+    config.cacheLocation = "D:\\spotinetta";
 
     qDebug() << "Creating session...";
     Session session(config);
     qDebug() << "Created session.";
 
-    SpotinettaConsole console(&session);
+    Console console(&session);
 
     if (session.isValid())
     {
