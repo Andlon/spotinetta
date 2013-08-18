@@ -18,7 +18,6 @@ typedef BasicLoadableObject<sp_playlist, &detail::playlist_add_ref, &detail::pla
 
 class Playlist : public BasicPlaylist {
 public:
-
     Playlist() { }
     Playlist(sp_playlist * playlist, bool increment = true) : BasicPlaylist(playlist, increment) { }
 
