@@ -18,6 +18,12 @@ typedef BasicLoadableObject<sp_search, &detail::search_add_ref, &detail::search_
 
 class Search : public BasicSearch {
 public:
+
+    enum class Type {
+        Standard = SP_SEARCH_STANDARD,
+        Suggest = SP_SEARCH_SUGGEST
+    };
+
     Search() { }
     Search(sp_search * search, bool increment = true) : BasicSearch(search, increment) { }
 

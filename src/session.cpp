@@ -29,6 +29,7 @@ void SP_CALLCONV handleEndOfTrack(sp_session *);
 //void SP_CALLCONV handleGetAudioBufferStats(sp_session *, sp_audio_buffer_stats *) { }
 //void SP_CALLCONV handleStartPlayback(sp_session *) { }
 //void SP_CALLCONV handleStopPlayback(sp_session *) { }
+void SP_CALLCONV handleSearchComplete(sp_search *, void *);
 
 }
 
@@ -191,6 +192,22 @@ Image Session::createAlbumCover(const Album &album, ImageSize size) const
 Image Session::createArtistPortrait(const Artist &artist, ImageSize size) const
 {
     return artist.isValid() ? createImage(sp_artist_portrait(artist.handle(), static_cast<sp_image_size>(size))) : Image();
+}
+
+Search Session::createSearch(const QString &query, int trackOffset, int maxTracks, int albumOffset,
+                             int maxAlbums, int artistOffset, int maxArtists, int playlistOffset,
+                             int maxPlaylists, Search::Type type)
+{
+    if (isValid())
+    {
+        QByteArray queryData = query.toUtf8();
+        return Search(sp_search_create(handle(), queryData.constData(), trackOffset, maxTracks,
+                                       albumOffset, maxAlbums, artistOffset, maxArtists,
+                                       playlistOffset, maxPlaylists, static_cast<sp_search_type>(type),
+                                       &handleSearchComplete, static_cast<void *>(this)));
+    }
+
+    return Search();
 }
 
 void Session::login(const QString &username, const QString &password, bool rememberMe)

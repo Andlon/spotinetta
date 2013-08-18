@@ -3,6 +3,8 @@
 #include "definitions.h"
 #include "error.h"
 
+#include "search.h"
+
 // See comment in private member of Session to see why this is included
 #include "playlistcontainer.h"
 
@@ -93,6 +95,12 @@ public:
     Image createImageFromLink(const Link &link) const;
     Image createArtistPortrait(const Artist &artist, ImageSize size) const;
     Image createAlbumCover(const Album& album, ImageSize size) const;
+
+    Search createSearch(const QString &query, int trackOffset, int maxTracks,
+                         int albumOffset, int maxAlbums,
+                         int artistOffset, int maxArtists,
+                         int playlistOffset, int maxPlaylists,
+                         Search::Type type);
 
 signals:
     void connectionStateChanged();
