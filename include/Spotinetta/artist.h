@@ -22,7 +22,6 @@ public:
     Artist(sp_artist * handle, bool increment = true) : BasicArtist(handle, increment) { }
 
     QString name() const;
-    //Image portrait()
 };
 }
 

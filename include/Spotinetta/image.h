@@ -18,12 +18,6 @@ typedef BasicLoadableObject<sp_image, &detail::image_add_ref, &detail::image_rel
 
 class Image : public BasicImage {
 public:
-    enum class Size {
-        Small = SP_IMAGE_SIZE_SMALL,
-        Normal = SP_IMAGE_SIZE_NORMAL,
-        Lage = SP_IMAGE_SIZE_LARGE
-    };
-
     enum class Format {
         Unknown = SP_IMAGE_FORMAT_UNKNOWN,
         JPEG = SP_IMAGE_FORMAT_JPEG

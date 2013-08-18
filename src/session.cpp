@@ -1,6 +1,8 @@
 #include <Spotinetta/session.h>
 #include <Spotinetta/track.h>
 #include <Spotinetta/image.h>
+#include <Spotinetta/album.h>
+#include <Spotinetta/artist.h>
 #include "events.h"
 
 #include <QCoreApplication>
@@ -152,7 +154,7 @@ Session::PlaybackState Session::playbackState() const
 
 Image Session::createImage(const byte * id) const
 {
-    if (isValid())
+    if (isValid() && id != 0)
     {
         // Make sure to _not_ increment reference count upon creation,
         // as sp_image_create pre-increments
@@ -160,6 +162,16 @@ Image Session::createImage(const byte * id) const
     }
 
     return Image();
+}
+
+Image Session::createAlbumCover(const Album &album, ImageSize size) const
+{
+    return album.isValid() ? createImage(sp_album_cover(album.handle(), static_cast<sp_image_size>(size))) : Image();
+}
+
+Image Session::createArtistPortrait(const Artist &artist, ImageSize size) const
+{
+    return artist.isValid() ? createImage(sp_artist_portrait(artist.handle(), static_cast<sp_image_size>(size))) : Image();
 }
 
 void Session::login(const QString &username, const QString &password, bool rememberMe)
