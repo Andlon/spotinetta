@@ -113,6 +113,8 @@ Session::Session(const SessionConfig &config, QObject *parent)
 
     if (m_error == Error::Ok)
     {
+        connect(this, &Session::endOfTrack, this, &Session::playbackStateChanged);
+
         m_handle.reset(session, &sp_session_release);
         processEvents();
     }
@@ -205,7 +207,11 @@ bool Session::play()
         m_error = static_cast<Error>(sp_session_player_play(handle(), true));
 
         if (m_error == Error::Ok)
+        {
+            m_playbackState = PlaybackState::Playing;
+            emit playbackStateChanged();
             return true;
+        }
     }
 
     return false;
@@ -231,7 +237,11 @@ bool Session::pause()
         m_error = static_cast<Error>(sp_session_player_play(handle(), false));
 
         if (m_error == Error::Ok)
+        {
+            m_playbackState = PlaybackState::Paused;
+            emit playbackStateChanged();
             return true;
+        }
     }
 
     return false;
@@ -265,6 +275,8 @@ void Session::customEvent(QEvent * e)
         emit metadataUpdated();
         break;
     case (Event::Type::EndOfTrackEvent):
+        m_playbackState = PlaybackState::Paused;
+        // playbackStateChanged is connected to endOfTrack
         emit endOfTrack();
         break;
     case (Event::Type::ConnectionErrorEvent):
