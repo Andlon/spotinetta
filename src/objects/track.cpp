@@ -1,6 +1,7 @@
 #include <Spotinetta/track.h>
 #include <Spotinetta/artist.h>
 #include <Spotinetta/album.h>
+#include <Spotinetta/session.h>
 
 namespace Spotinetta {
 
@@ -42,5 +43,37 @@ Album Track::album() const
 {
     return isValid() ? Album(sp_track_album(handle())) : Album();
 }
+
+bool Track::isAutoLinked(const Session * session) const
+{
+    if (isValid() && session->isValid())
+    {
+        return sp_track_is_autolinked(session->handle(), handle());
+    }
+
+    return false;
+}
+
+Track::Availability Track::availability(const Session * session) const
+{
+    if (isValid() && session->isValid())
+    {
+        return static_cast<Availability>(sp_track_get_availability(session->handle(), handle()));
+    }
+
+    return Availability::Unavailable;
+}
+
+Track Track::playableTrack(const Session * session) const
+{
+    if (isValid() && session->isValid())
+    {
+        return Track(sp_track_get_playable(session->handle(), handle()));
+    }
+
+    return Track();
+}
+
+
 
 }

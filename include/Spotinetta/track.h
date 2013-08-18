@@ -18,12 +18,30 @@ typedef BasicLoadableObject<sp_track, &detail::track_add_ref, &detail::track_rel
 
 class Track : public BasicTrack {
 public:
+    enum class Availability {
+        Unavailable = SP_TRACK_AVAILABILITY_UNAVAILABLE,
+        Available =  SP_TRACK_AVAILABILITY_AVAILABLE,
+        NotStreamable =  SP_TRACK_AVAILABILITY_NOT_STREAMABLE,
+        BannedByArtist =  SP_TRACK_AVAILABILITY_BANNED_BY_ARTIST
+    };
+
+    enum class OfflineStatus {
+        No = SP_TRACK_OFFLINE_NO,
+        Waiting = SP_TRACK_OFFLINE_WAITING,
+        Downloading = SP_TRACK_OFFLINE_DOWNLOADING,
+        Done = SP_TRACK_OFFLINE_DONE,
+        Error = SP_TRACK_OFFLINE_ERROR,
+        DoneExpired = SP_TRACK_OFFLINE_DONE_EXPIRED,
+        LimitExceeded = SP_TRACK_OFFLINE_LIMIT_EXCEEDED,
+        DoneResync = SP_TRACK_OFFLINE_DONE_RESYNC
+    };
+
     Track() { }
     Track(sp_track * track, bool increment = true) : BasicTrack(track, increment) { }
 
-    bool isAutoLinked(const Session &session) const;
-    bool isAvailable(const Session &session) const;
-    Track playableTrack(const Session &session) const;
+    bool isAutoLinked(const Session * session) const;
+    Availability availability(const Session * session) const;
+    Track playableTrack(const Session * session) const;
 
     QString name() const;
 
