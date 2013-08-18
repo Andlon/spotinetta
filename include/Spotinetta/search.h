@@ -25,7 +25,7 @@ public:
     };
 
     Search() { }
-    Search(sp_search * search, bool increment = true) : BasicSearch(search, increment) { }
+    explicit Search(sp_search * search, bool increment = true) : BasicSearch(search, increment) { }
 
     QString query() const;
     QString didYouMean() const;

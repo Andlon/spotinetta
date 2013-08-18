@@ -24,7 +24,7 @@ public:
     };
 
     Image() { }
-    Image(sp_image * image, bool increment = true) : BasicImage(image, increment) { }
+    explicit Image(sp_image * image, bool increment = true) : BasicImage(image, increment) { }
 
     QByteArray data() const;
     Format format() const;

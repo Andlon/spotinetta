@@ -30,7 +30,7 @@ public:
     };
 
     Link() { }
-    Link(sp_link * link, bool increment = true) : BasicLink(link, increment) { }
+    explicit Link(sp_link * link, bool increment = true) : BasicLink(link, increment) { }
 
     explicit Link(const QString &uri);
     explicit Link(const Image &image);

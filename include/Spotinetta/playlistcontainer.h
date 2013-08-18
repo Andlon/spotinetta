@@ -19,7 +19,7 @@ typedef BasicLoadableObject<sp_playlistcontainer, &detail::playlistcontainer_add
 class PlaylistContainer : public BasicPlaylistContainer {
 public:
     PlaylistContainer() { }
-    PlaylistContainer(sp_playlistcontainer * playlistcontainer, bool increment = true) : BasicPlaylistContainer(playlistcontainer, increment) { }
+    explicit PlaylistContainer(sp_playlistcontainer * playlistcontainer, bool increment = true) : BasicPlaylistContainer(playlistcontainer, increment) { }
 
     User owner() const;
 

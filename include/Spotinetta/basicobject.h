@@ -14,7 +14,7 @@ private:
 
 public:
     BasicObject() : m_handle(0) { }
-    BasicObject(HandleType * handle, bool increment = true);
+    explicit BasicObject(HandleType * handle, bool increment = true);
     BasicObject(const BasicObject &other);
     ~BasicObject();
 
@@ -30,7 +30,7 @@ template <typename HandleType, sp_error RefFunc(HandleType *), sp_error DerefFun
 class BasicLoadableObject : public BasicObject<HandleType, RefFunc, DerefFunc> {
 public:
     BasicLoadableObject() { }
-    BasicLoadableObject(HandleType * handle, bool increment = true) : BasicObject<HandleType, RefFunc, DerefFunc>(handle, increment) { }
+    explicit BasicLoadableObject(HandleType * handle, bool increment = true) : BasicObject<HandleType, RefFunc, DerefFunc>(handle, increment) { }
 
     bool isLoaded() const;
 };

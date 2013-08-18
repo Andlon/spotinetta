@@ -2,6 +2,7 @@
 #include <Spotinetta/track.h>
 #include <Spotinetta/album.h>
 #include <Spotinetta/artist.h>
+#include <Spotinetta/playlist.h>
 
 namespace Spotinetta {
 

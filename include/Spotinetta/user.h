@@ -19,7 +19,7 @@ typedef BasicLoadableObject<sp_user, &detail::user_add_ref, &detail::user_releas
 class User : public BasicUser {
 public:
     User() { }
-    User(sp_user * user, bool increment = true) : BasicUser(user, increment) { }
+    explicit User(sp_user * user, bool increment = true) : BasicUser(user, increment) { }
 
     QString canonicalName() const;
     QString displayName() const;

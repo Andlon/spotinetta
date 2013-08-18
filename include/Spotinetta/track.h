@@ -37,7 +37,7 @@ public:
     };
 
     Track() { }
-    Track(sp_track * track, bool increment = true) : BasicTrack(track, increment) { }
+    explicit Track(sp_track * track, bool increment = true) : BasicTrack(track, increment) { }
 
     bool isAutoLinked(const Session * session) const;
     Availability availability(const Session * session) const;

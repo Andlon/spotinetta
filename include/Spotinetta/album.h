@@ -48,7 +48,7 @@ public:
 #endif
 
     Album() { }
-    Album(sp_album * handle, bool increment = true) : BasicAlbum(handle, increment) { }
+    explicit Album(sp_album * handle, bool increment = true) : BasicAlbum(handle, increment) { }
 
     bool isAvailable() const;
     QString name() const;

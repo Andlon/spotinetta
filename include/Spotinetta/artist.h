@@ -19,7 +19,7 @@ typedef BasicLoadableObject<sp_artist, &detail::artist_add_ref, &detail::artist_
 class Artist : public BasicArtist {
 public:
     Artist() { }
-    Artist(sp_artist * handle, bool increment = true) : BasicArtist(handle, increment) { }
+    explicit Artist(sp_artist * handle, bool increment = true) : BasicArtist(handle, increment) { }
 
     QString name() const;
 };
