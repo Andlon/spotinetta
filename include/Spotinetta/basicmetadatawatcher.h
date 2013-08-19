@@ -11,7 +11,7 @@ namespace Spotinetta {
 class LoadedSignalProvider : public QObject {
     Q_OBJECT
 public:
-    explicit LoadedSignalBase(QObject * parent = 0) : QObject(parent) { }
+    explicit LoadedSignalProvider(QObject * parent = 0) : QObject(parent) { }
 
 signals:
     void loaded();
@@ -35,7 +35,7 @@ private:
 
 template <class WatchedType>
 inline BasicMetadataWatcher<WatchedType>::BasicMetadataWatcher(const Session * session, QObject * parent = 0)
-    :   LoadedSignalBase(parent), m_session(session)
+    :   LoadedSignalProvider(parent), m_session(session)
 { }
 
 template <class WatchedType>
