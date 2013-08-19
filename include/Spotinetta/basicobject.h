@@ -110,12 +110,6 @@ inline BasicObject<HandleType, RefFunc, DerefFunc> & BasicObject<HandleType, Ref
     return *this;
 }
 
-template <typename HandleType, sp_error RefFunc(HandleType *), sp_error DerefFunc(HandleType *)>
-inline bool BasicObject<HandleType, RefFunc, DerefFunc>::operator == (const BasicObject<HandleType, RefFunc, DerefFunc> &other)
-{
-    return isValid() && other.isValid() && handle() == other.handle();
-}
-
 /*
  * BasicLoadableObject implementation
  */
