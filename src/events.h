@@ -20,21 +20,24 @@ public:
         StartPlaybackEvent,
         StopPlaybackEvent,
         EndOfTrackEvent,
-        StreamingErrorEvent
+        StreamingErrorEvent,
+        SearchCompleteEvent
     };
 
-    Event(Type type, Error error = Error::Ok, const QByteArray &data = QByteArray());
+    Event(Type type, Error error = Error::Ok, const QByteArray &data = QByteArray(), void * userdata = 0);
 
-    Error    error() const;
+    Error       error() const;
     QByteArray  data() const;
+    void *      userdata() const;
 
 private:
     QByteArray m_data;
     Error m_error;
+    void * m_userdata;
 };
 
-inline Event::Event(Type type, Error error, const QByteArray &data)
-    :   QEvent(static_cast<QEvent::Type>(type)),m_data(data),  m_error(error)
+inline Event::Event(Type type, Error error, const QByteArray &data, void * userdata)
+    :   QEvent(static_cast<QEvent::Type>(type)),m_data(data),  m_error(error), m_userdata(userdata)
 { }
 
 inline Error Event::error() const
@@ -45,6 +48,11 @@ inline Error Event::error() const
 inline QByteArray Event::data() const
 {
     return m_data;
+}
+
+inline void * Event::userdata() const
+{
+    return m_userdata;
 }
 
 }
