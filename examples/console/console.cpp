@@ -1,6 +1,7 @@
 #include "console.h"
 
 #include <Spotinetta/playlist.h>
+#include <Spotinetta/playlistcontainerwatcher.h>
 
 #include <iostream>
 
@@ -56,6 +57,22 @@ void Console::start()
 void Console::onLoggedIn()
 {
     out << "Successfully logged in. " << endl;
+
+    // Load root playlist container
+    sp::PlaylistContainerWatcher * watcher = new sp::PlaylistContainerWatcher(m_session, this);
+    connect(watcher, &sp::PlaylistContainerWatcher::loaded, [=] {
+        out << "Available playlists: " << endl;
+        sp::PlaylistContainer container = watcher->watched();
+        sp::PlaylistList playlists = container.playlists();
+        for (const sp::Playlist &playlist : playlists)
+        {
+            out << playlist.name() << " (" << playlist.trackCount() << ")" << endl;
+        }
+    });
+
+    connect(watcher, &sp::PlaylistContainerWatcher::loaded, watcher, &sp::PlaylistContainerWatcher::deleteLater);
+
+    watcher->watch(m_session->rootContainer());
 }
 
 void Console::onLoginFailed(Spotinetta::Error error)
