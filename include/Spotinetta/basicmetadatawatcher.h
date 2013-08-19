@@ -6,7 +6,9 @@
 
 namespace Spotinetta {
 
-class LoadedSignalBase : public QObject {
+// We need this class to provide BasicMetadataWatcher with the loaded() signal,
+// as Q_OBJECT can not be used in template classes
+class LoadedSignalProvider : public QObject {
     Q_OBJECT
 public:
     explicit LoadedSignalBase(QObject * parent = 0) : QObject(parent) { }
@@ -16,7 +18,7 @@ signals:
 };
 
 template <class WatchedType>
-class BasicMetadataWatcher : public LoadedSignalBase
+class BasicMetadataWatcher : public LoadedSignalProvider
 {
 public:
     explicit BasicMetadataWatcher(const Session * session, QObject * parent = 0);

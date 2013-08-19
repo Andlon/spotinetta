@@ -3,10 +3,9 @@
 #include <Spotinetta/playlist.h>
 #include <Spotinetta/playlistcontainerwatcher.h>
 #include <Spotinetta/playlistwatcher.h>
-#include <Spotinetta/trackwatcher.h>
 #include <Spotinetta/link.h>
 #include <Spotinetta/track.h>
-#include <Spotinetta/trackwatcher.h>
+#include <Spotinetta/watchers.h>
 
 #include <iostream>
 

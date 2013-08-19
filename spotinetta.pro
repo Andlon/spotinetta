@@ -64,5 +64,5 @@ HEADERS += \
     include/Spotinetta/playlistcontainer.h \
     include/Spotinetta/playlistcontainerwatcher.h \
     include/Spotinetta/playlistwatcher.h \
-    include/Spotinetta/trackwatcher.h \
-    include/Spotinetta/basicmetadatawatcher.h
+    include/Spotinetta/basicmetadatawatcher.h \
+    include/Spotinetta/watchers.h
