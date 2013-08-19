@@ -48,7 +48,7 @@ inline void BasicMetadataWatcher<WatchedType>::watch(const WatchedType &object)
     if (object != watched())
     {
         if (m_watched.isValid() && !m_session.isNull())
-            disconnect(m_session, &Session::metadataUpdated, this, &BasicMetadataWatcher<WatchedType>::checkLoaded());
+            disconnect(m_session, &Session::metadataUpdated, this, &BasicMetadataWatcher<WatchedType>::checkLoaded);
 
         m_watched = object;
 
@@ -64,7 +64,8 @@ inline void BasicMetadataWatcher<WatchedType>::checkLoaded()
 {
     if (watched().isLoaded() && !m_session.isNull())
     {
-        disconnect(m_session, &Session::metadataUpdated, this, &BasicMetadataWatcher<WatchedType>::checkLoaded());
+        disconnect(m_session, &Session::metadataUpdated, this, &BasicMetadataWatcher<WatchedType>::checkLoaded);
+        emit loaded();
     }
 }
 

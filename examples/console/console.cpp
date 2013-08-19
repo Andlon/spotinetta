@@ -3,6 +3,10 @@
 #include <Spotinetta/playlist.h>
 #include <Spotinetta/playlistcontainerwatcher.h>
 #include <Spotinetta/playlistwatcher.h>
+#include <Spotinetta/trackwatcher.h>
+#include <Spotinetta/link.h>
+#include <Spotinetta/track.h>
+#include <Spotinetta/trackwatcher.h>
 
 #include <iostream>
 
@@ -59,61 +63,84 @@ void Console::onLoggedIn()
 {
     out << "Successfully logged in. " << endl;
 
-    auto printPlaylists = [this] (const sp::PlaylistContainer &container) {
-        sp::PlaylistList playlists = container.playlists();
-        for (const sp::Playlist &playlist : playlists)
-        {
-            out << playlist.name() << " (" << playlist.trackCount() << ")" << endl;
-        }
-    };
+    sp::Link trackLink("spotify:track:5T6hai5yeaakZcs1QE8rFD");
+    sp::Track track = trackLink.track();
 
-    // Load root playlist container
-    sp::PlaylistContainerWatcher * watcher = new sp::PlaylistContainerWatcher(m_session, this);
-    connect(watcher, &sp::PlaylistContainerWatcher::loaded, [=] {
-        out << "Available playlists: " << endl;
-        sp::PlaylistContainer container = watcher->watched();
-        sp::PlaylistList playlists = container.playlists();
+    if (track.isValid())
+    {
+        out << "Loading track..." << endl;
 
-        auto checkAndPrintPlaylists = [=] {
-            bool allLoaded = true;
+        sp::TrackWatcher * watcher = new sp::TrackWatcher(m_session, this);
+        connect(watcher, &sp::TrackWatcher::loaded, [=] {
+            out << "Title: " << track.name() << endl
+                << "Duration: " << track.duration() << endl;
+        });
 
-            sp::PlaylistList playlists = container.playlists();
-            for (const sp::Playlist &playlist : playlists)
-            {
-                if (!playlist.isLoaded())
-                    allLoaded = false;
-            }
+        connect(watcher, &sp::TrackWatcher::loaded, watcher, &sp::TrackWatcher::deleteLater);
+        watcher->watch(track);
+    }
+    else
+    {
+        out << "Invalid track." << endl;
+    }
 
-            if (allLoaded)
-                printPlaylists(container);
-        };
 
-        bool allLoaded = true;
 
-        for (const sp::Playlist &playlist : playlists)
-        {
-            if (!playlist.isLoaded())
-            {
-                allLoaded = false;
-                sp::PlaylistWatcher * playlistWatcher = new sp::PlaylistWatcher(m_session, this);
-                playlistWatcher->watch(playlist);
-                connect(playlistWatcher, &sp::PlaylistWatcher::stateChanged, [=] {
-                    if (playlistWatcher->watched().isLoaded())
-                    {
-                        playlistWatcher->deleteLater();
-                        checkAndPrintPlaylists();
-                    }
-                });
-            }
-        }
+//    auto printPlaylists = [this] (const sp::PlaylistContainer &container) {
+//        sp::PlaylistList playlists = container.playlists();
+//        for (const sp::Playlist &playlist : playlists)
+//        {
+//            out << playlist.name() << " (" << playlist.trackCount() << ")" << endl;
+//        }
+//    };
 
-        if (allLoaded)
-            printPlaylists(container);
-    });
+//    // Load root playlist container
+//    sp::PlaylistContainerWatcher * watcher = new sp::PlaylistContainerWatcher(m_session, this);
+//    connect(watcher, &sp::PlaylistContainerWatcher::loaded, [=] {
+//        out << "Available playlists: " << endl;
+//        sp::PlaylistContainer container = watcher->watched();
+//        sp::PlaylistList playlists = container.playlists();
 
-    connect(watcher, &sp::PlaylistContainerWatcher::loaded, watcher, &sp::PlaylistContainerWatcher::deleteLater);
+//        auto checkAndPrintPlaylists = [=] {
+//            bool allLoaded = true;
 
-    watcher->watch(m_session->rootContainer());
+//            sp::PlaylistList playlists = container.playlists();
+//            for (const sp::Playlist &playlist : playlists)
+//            {
+//                if (!playlist.isLoaded())
+//                    allLoaded = false;
+//            }
+
+//            if (allLoaded)
+//                printPlaylists(container);
+//        };
+
+//        bool allLoaded = true;
+
+//        for (const sp::Playlist &playlist : playlists)
+//        {
+//            if (!playlist.isLoaded())
+//            {
+//                allLoaded = false;
+//                sp::PlaylistWatcher * playlistWatcher = new sp::PlaylistWatcher(m_session, this);
+//                playlistWatcher->watch(playlist);
+//                connect(playlistWatcher, &sp::PlaylistWatcher::stateChanged, [=] {
+//                    if (playlistWatcher->watched().isLoaded())
+//                    {
+//                        playlistWatcher->deleteLater();
+//                        checkAndPrintPlaylists();
+//                    }
+//                });
+//            }
+//        }
+
+//        if (allLoaded)
+//            printPlaylists(container);
+//    });
+
+//    connect(watcher, &sp::PlaylistContainerWatcher::loaded, watcher, &sp::PlaylistContainerWatcher::deleteLater);
+
+//    watcher->watch(m_session->rootContainer());
 }
 
 void Console::onLoginFailed(Spotinetta::Error error)
