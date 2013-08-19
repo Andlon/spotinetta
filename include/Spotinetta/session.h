@@ -107,6 +107,7 @@ signals:
     void playbackStateChanged();
 
     void metadataUpdated();
+    void searchCompleted(const Search &search);
 
     void loggedIn();
     void loggedOut();

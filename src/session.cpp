@@ -204,7 +204,7 @@ Search Session::createSearch(const QString &query, int trackOffset, int maxTrack
         return Search(sp_search_create(handle(), queryData.constData(), trackOffset, maxTracks,
                                        albumOffset, maxAlbums, artistOffset, maxArtists,
                                        playlistOffset, maxPlaylists, static_cast<sp_search_type>(type),
-                                       &handleSearchComplete, static_cast<void *>(this)));
+                                       &handleSearchComplete, static_cast<void *>(this)), false);
     }
 
     return Search();
@@ -315,6 +315,9 @@ void Session::customEvent(QEvent * e)
     case (Event::Type::StreamingErrorEvent):
         emit streamingError(event->error());
         break;
+    case (Event::Type::SearchCompleteEvent):
+        emit searchCompleted(Search(static_cast<sp_search *>(event->userdata())));
+        break;
 
     default:
         qWarning() << "Spotinetta::Session received unhandled event.";
@@ -370,6 +373,12 @@ void SP_CALLCONV handleStreamingError(sp_session * s, sp_error e) {
 void SP_CALLCONV handleEndOfTrack(sp_session * s) {
     Session * session = static_cast<Session *>(sp_session_userdata(s));
     QCoreApplication::postEvent(session, new Event(Event::Type::EndOfTrackEvent));
+}
+
+void SP_CALLCONV handleSearchComplete(sp_search * search, void * userdata)
+{
+    Session * session = static_cast<Session *>(userdata);
+    QCoreApplication::postEvent(session, new Event(Event::Type::SearchCompleteEvent, Error::Ok, QByteArray(), static_cast<void *>(search)));
 }
 
 }
