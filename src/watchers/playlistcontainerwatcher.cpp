@@ -88,6 +88,9 @@ void PlaylistContainerWatcher::customEvent(QEvent * event)
     case (ContainerEvent::Type::Loaded):
         // Container loaded
         emit loaded();
+
+    default:
+        break;
     }
 }
 
