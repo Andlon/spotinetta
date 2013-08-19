@@ -22,9 +22,19 @@ public:
     HandleType * handle() const;
 
     BasicObject & operator = (const BasicObject & other);
-
-    bool operator == (const BasicObject &other);
 };
+
+template <typename HandleType, sp_error RefFunc(HandleType *), sp_error DerefFunc(HandleType *)>
+inline bool operator == (const BasicObject<HandleType, RefFunc, DerefFunc> &a, const BasicObject<HandleType, RefFunc, DerefFunc> &b)
+{
+    return a.isValid() && b.isValid() && a.handle() == b.handle();
+}
+
+template <typename HandleType, sp_error RefFunc(HandleType *), sp_error DerefFunc(HandleType *)>
+inline bool operator != (const BasicObject<HandleType, RefFunc, DerefFunc> &a, const BasicObject<HandleType, RefFunc, DerefFunc> &b)
+{
+    return !(a == b);
+}
 
 template <typename HandleType, sp_error RefFunc(HandleType *), sp_error DerefFunc(HandleType *), bool IsLoadedFunc(HandleType *)>
 class BasicLoadableObject : public BasicObject<HandleType, RefFunc, DerefFunc> {
