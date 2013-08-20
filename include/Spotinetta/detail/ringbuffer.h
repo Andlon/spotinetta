@@ -21,8 +21,6 @@ public:
 
     qint64 write(const T * data, qint64 maxSize);
     qint64 read(T * data, qint64 maxSize);
-    qint64 peek(T * data, qint64 maxSize);
-    qint64 consume(qint64 size);
 
 private:
     QScopedArrayPointer<T>  m_data;
@@ -120,41 +118,6 @@ inline qint64 RingBuffer<T, ChunkSize>::read(T * data, qint64 maxSize)
     }
 
     return read;
-}
-
-template <class T, qint64 ChunkSize>
-inline qint64 RingBuffer<T, ChunkSize>::peek(T * data, qint64 maxSize)
-{
-    qint64 maximum = qMin(maxSize, m_size);
-
-    qint64 read = 0;
-    qint64 pos = m_start;
-    qint64 available = used();
-
-    while (available > 0 && read < maximum)
-    {
-        qint64 toRead = qMin(qMin(maximum - read, ChunkSize), available);
-
-        for (qint64 i = 0; i < toRead; ++i)
-        {
-            data[read + i] = m_data[pos];
-            pos = (pos + 1) % m_size;
-        }
-
-        read += toRead;
-        available = used() - read;
-    }
-
-    return read;
-}
-
-template <class T, qint64 ChunkSize>
-inline qint64 RingBuffer<T, ChunkSize>::consume(qint64 size)
-{
-    Q_ASSERT(size <= used());
-    m_free.acquire(size);
-    m_start = (m_start + size) % m_size;
-    m_used.release(size);
 }
 
 
