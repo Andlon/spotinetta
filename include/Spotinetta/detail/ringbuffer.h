@@ -7,7 +7,7 @@ namespace Spotinetta {
 
 namespace detail {
 
-template <class T, int ChunkSize>
+template <class T, qint64 ChunkSize>
 class RingBuffer {
 public:
     explicit RingBuffer(qint64 size) :
@@ -25,8 +25,8 @@ public:
     qint64 consume(qint64 maxSize);
 
 private:
-    const QScopedArrayPointer<T>  m_data;
-    const qint64                  m_size;
+    QScopedArrayPointer<T>  m_data;
+    const qint64            m_size;
 
     QSemaphore m_free;
     QSemaphore m_used;
@@ -35,25 +35,25 @@ private:
     qint64 m_end;
 };
 
-template <class T, int ChunkSize>
+template <class T, qint64 ChunkSize>
 inline qint64 RingBuffer<T, ChunkSize>::free() const
 {
-    return size() - m_free.available();
+    return m_used.available();
 }
 
-template <class T, int ChunkSize>
+template <class T, qint64 ChunkSize>
 inline qint64 RingBuffer<T, ChunkSize>::used() const
 {
-    return size() - m_used.available();
+    return m_free.available();
 }
 
-template <class T, int ChunkSize>
+template <class T, qint64 ChunkSize>
 inline qint64 RingBuffer<T, ChunkSize>::size() const
 {
     return m_size;
 }
 
-template <class T, int ChunkSize>
+template <class T, qint64 ChunkSize>
 inline qint64 RingBuffer<T, ChunkSize>::write(const T * data, qint64 maxSize)
 {
     // Determine the absolute maximum amount of objects to write
@@ -61,8 +61,9 @@ inline qint64 RingBuffer<T, ChunkSize>::write(const T * data, qint64 maxSize)
 
     qint64 written = 0;
     qint64 pos = m_end;
+    qint64 available = free();
 
-    while (qint64 available = free() > 0 && written < maximum)
+    while (available > 0 && written < maximum)
     {
         // Determine how many objects to write based on the minimum
         // of avail, chunkSize and (maximum-written)
@@ -72,7 +73,7 @@ inline qint64 RingBuffer<T, ChunkSize>::write(const T * data, qint64 maxSize)
 
         for (qint64 i = 0; i < toWrite; ++i)
         {
-            m_data[pos] = data[i];
+            m_data[pos] = data[written + i];
 
             // Make sure to correct position when it loops back
             // to the beginning of the buffer
@@ -80,15 +81,17 @@ inline qint64 RingBuffer<T, ChunkSize>::write(const T * data, qint64 maxSize)
         }
 
         // Update end position
-        m_end += toWrite;
+        m_end = (m_end + toWrite) % m_size;
+        written += toWrite;
 
         m_free.release(toWrite);
+        available = free();
     }
 
     return written;
 }
 
-template <class T, int ChunkSize>
+template <class T, qint64 ChunkSize>
 inline qint64 RingBuffer<T, ChunkSize>::read(T * data, qint64 maxSize)
 {
     // Determine the absolute maximum of objects to read
@@ -96,8 +99,9 @@ inline qint64 RingBuffer<T, ChunkSize>::read(T * data, qint64 maxSize)
 
     qint64 read = 0;
     qint64 pos = m_start;
+    qint64 available = used();
 
-    while (qint64 available = used() > 0 && read < maximum)
+    while (available > 0 && read < maximum)
     {
         qint64 toRead = qMin(qMin(maximum - read, ChunkSize), available);
 
@@ -105,12 +109,14 @@ inline qint64 RingBuffer<T, ChunkSize>::read(T * data, qint64 maxSize)
 
         for (qint64 i = 0; i < toRead; ++i)
         {
-            m_data[pos] = data[i];
+            data[read + i] = m_data[pos];
             pos = (pos + 1) % m_size;
         }
 
-        m_start += toRead;
+        m_start = (m_start + toRead) % m_size;
+        read += toRead;
         m_used.release(toRead);
+        available = used();
     }
 
     return read;
