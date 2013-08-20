@@ -37,11 +37,15 @@ void RingbufferTest::testInputOutput()
 
     QByteArray input = "Hello world!";
     QByteArray output;
+    QByteArray peek;
     output.resize(input.size());
+    peek.resize(input.size());
 
     buffer.write(input.constData(), input.size());
+    buffer.peek(peek.data(), peek.size());
     buffer.read(output.data(), output.size());
 
+    QVERIFY(peek == input);
     QVERIFY(input == output);
 }
 
