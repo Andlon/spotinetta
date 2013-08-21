@@ -69,4 +69,5 @@ HEADERS += \
     include/Spotinetta/watchers.h \
     include/Spotinetta/audioformat.h \
     include/Spotinetta/audiobuffer.h \
-    include/Spotinetta/detail/ringbuffer.h
+    include/Spotinetta/detail/ringbuffer.h \
+    include/Spotinetta/audiooutput.h

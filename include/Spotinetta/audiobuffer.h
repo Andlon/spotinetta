@@ -1,42 +1,34 @@
 #pragma once
 
 #include "audioformat.h"
+#include "detail/ringbuffer.h"
 
 #include <QObject>
-#include <libspotify/api.h>
-
+#include <QQueue>
+#include <QMutex>
 
 namespace Spotinetta {
 
-class AudioFrameCollection {
-public:
-    AudioFrameCollection(const char * data, int bytes, const AudioFormat &format);
 
-    const char *    data() const;
-
-    int             bytes() const;
-    int             frames() const;
-    AudioFormat     format() const;
-
-private:
-    QByteArray  m_data;
-    AudioFormat m_format;
-
-    friend class AudioBuffer;
-};
 
 class AudioBuffer : public QObject {
     Q_OBJECT
 
 public:
-    explicit AudioBuffer(QObject * parent = 0);
+    explicit AudioBuffer(qint64 size, QObject * parent = 0);
 
-    int                     deliver(const AudioFrameCollection &collection);
-    AudioFrameCollection    peek(int maxBytes = 0) const;
-    void                    consume(AudioFrameCollection &collection);
+    int                     deliver(const QByteArray &data, const AudioFrameCollection &collection);
+
+    AudioFrameCollection    peekCollection(int maxBytes = 0) const;
+    void                    takeCollection(QByteArray &buffer, const AudioFrameCollection &collection);
 
 signals:
     void dataAvailable();
+
+private:
+    detail::RingBuffer<char, 2048>  m_buffer;
+    QQueue<AudioFrameCollection>    m_collections;
+    mutable QMutex                  m_queueMutex;
 
 };
 
