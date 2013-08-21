@@ -99,10 +99,8 @@ public:
 
     PlaylistContainer rootContainer() const;
 
-    Image createImage(const byte * id) const;
+    Image createImage(ImageId id) const;
     Image createImageFromLink(const Link &link) const;
-    Image createArtistPortrait(const Artist &artist, ImageSize size) const;
-    Image createAlbumCover(const Album& album, ImageSize size) const;
 
     Search createSearch(const QString &query, int trackOffset, int maxTracks,
                          int albumOffset, int maxAlbums,

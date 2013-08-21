@@ -28,4 +28,9 @@ Artist Album::artist() const
     return isValid() ? Artist(sp_album_artist(handle())) : Artist();
 }
 
+ImageId Album::cover(ImageSize size) const
+{
+    return isValid() ? sp_album_cover(handle(), static_cast<sp_image_size>(size)) : 0;
+}
+
 }

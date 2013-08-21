@@ -57,6 +57,7 @@ public:
     Type type() const;
 
     Artist artist() const;
+    ImageId cover(ImageSize size) const;
 };
 }
 

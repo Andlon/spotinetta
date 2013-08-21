@@ -166,7 +166,7 @@ PlaylistContainer Session::rootContainer() const
     return m_rootContainer;
 }
 
-Image Session::createImage(const byte * id) const
+Image Session::createImage(ImageId id) const
 {
     if (isValid() && id != 0)
     {
@@ -187,16 +187,6 @@ Image Session::createImageFromLink(const Link &link) const
     }
 
     return Image();
-}
-
-Image Session::createAlbumCover(const Album &album, ImageSize size) const
-{
-    return album.isValid() ? createImage(sp_album_cover(album.handle(), static_cast<sp_image_size>(size))) : Image();
-}
-
-Image Session::createArtistPortrait(const Artist &artist, ImageSize size) const
-{
-    return artist.isValid() ? createImage(sp_artist_portrait(artist.handle(), static_cast<sp_image_size>(size))) : Image();
 }
 
 Search Session::createSearch(const QString &query, int trackOffset, int maxTracks, int albumOffset,
