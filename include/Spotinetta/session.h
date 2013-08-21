@@ -2,6 +2,7 @@
 
 #include "definitions.h"
 #include "error.h"
+#include "audiooutput.h"
 
 #include "search.h"
 
@@ -35,9 +36,11 @@ struct SessionConfig {
     SessionConfig() :
         compressPlaylists(false),
         dontSaveMetadataForPlaylists(false),
-        initiallyUnloadPlaylists(false)
+        initiallyUnloadPlaylists(false),
+        audioOutput(nullptr)
     { }
 
+    // libspotify configuration
     ApplicationKey applicationKey;
     QString cacheLocation;
     QString settingsLocation;
@@ -52,6 +55,9 @@ struct SessionConfig {
     bool compressPlaylists;
     bool dontSaveMetadataForPlaylists;
     bool initiallyUnloadPlaylists;
+
+    // Spotinetta configuration
+    AudioOutputInterface * audioOutput;
 };
 
 class Session : public QObject {
@@ -85,6 +91,8 @@ public:
     bool            isValid() const;
     Error           error() const;
     sp_session *    handle() const;
+
+    AudioOutputInterface * audioOutput() const;
 
     ConnectionState connectionState() const;
     PlaybackState   playbackState() const;

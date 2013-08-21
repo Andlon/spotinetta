@@ -146,6 +146,11 @@ sp_session * Session::handle() const
     return m_handle.data();
 }
 
+AudioOutputInterface * Session::audioOutput() const
+{
+    return m_config.audioOutput;
+}
+
 Session::ConnectionState Session::connectionState() const
 {
     return isValid() ? static_cast<ConnectionState>(sp_session_connectionstate(handle())) : ConnectionState::Undefined;
@@ -361,8 +366,37 @@ void SP_CALLCONV handleMetadataUpdated(sp_session * s) {
     QCoreApplication::postEvent(session, new Event(Event::Type::MetadataUpdatedEvent));
 }
 
-int  SP_CALLCONV handleMusicDelivery(sp_session *, const sp_audioformat *, const void *, int frameCount) {
-    return frameCount; // Temporarily consume all frames
+int  SP_CALLCONV handleMusicDelivery(sp_session * s, const sp_audioformat * f, const void * frames, int frameCount) {
+    // Retrieve output, if it exists
+    Session * session = static_cast<Session *>(sp_session_userdata(s));
+    AudioOutputInterface * output = session->audioOutput();
+
+    if (f->sample_type != SP_SAMPLETYPE_INT16_NATIVE_ENDIAN)
+    {
+        // This will spam... a lot.
+        qWarning() << "Unsupported sampletype!";
+        return 0;
+    }
+
+    int consumed = 0;
+    if (output != nullptr)
+    {
+        if (frameCount > 0)
+        {
+            AudioFormat format(f->sample_rate, f->channels);
+            AudioFrameCollection collection(static_cast<const char *>(frames),
+                                            format.bytesPerFrame() * frameCount,
+                                            format);
+            consumed = output->deliver(collection);
+        }
+        else
+        {
+            // frameCount == 0, reset buffers
+            output->reset();
+        }
+    }
+
+    return consumed;
 }
 
 void SP_CALLCONV handleStreamingError(sp_session * s, sp_error e) {

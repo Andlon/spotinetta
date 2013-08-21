@@ -63,7 +63,7 @@ public:
      *              Signals that any buffers containing audiodata should be cleared.
      *
      */
-    virtual void reset();
+    virtual void reset() = 0;
 };
 
 
