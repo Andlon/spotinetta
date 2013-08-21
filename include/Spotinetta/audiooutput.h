@@ -2,8 +2,6 @@
 
 #include <QtGlobal>
 
-#include "audioformat.h"
-
 namespace Spotinetta {
 
 class AudioFormat {
