@@ -1,6 +1,6 @@
 #pragma once
 
-#include "basicmetadatawatcher.h"
+#include "basicwatcher.h"
 #include "playlistcontainerwatcher.h"
 #include "playlistwatcher.h"
 
@@ -10,8 +10,8 @@
 
 namespace Spotinetta {
 
-typedef BasicMetadataWatcher<Track>     TrackWatcher;
-typedef BasicMetadataWatcher<Artist>    ArtistWatcher;
-typedef BasicMetadataWatcher<Album>     AlbumWatcher;
+typedef BasicWatcher<Track, &Session::metadataUpdated>     TrackWatcher;
+typedef BasicWatcher<Artist, &Session::metadataUpdated>    ArtistWatcher;
+typedef BasicWatcher<Album, &Session::metadataUpdated>     AlbumWatcher;
 
 }

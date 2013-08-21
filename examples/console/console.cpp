@@ -294,9 +294,24 @@ void Console::processIdleInput(const QStringList &words)
 
             if (track.isValid())
             {
-                m_session->load(track);
-                m_session->seek(0);
-                m_session->play();
+                auto playTrack = [=] {
+                    m_session->load(track);
+                    m_session->play();
+                    m_session->seek(0);
+                    out << "Playing: " << track.name() << endl;
+                };
+
+                if (!track.isLoaded())
+                {
+                    sp::TrackWatcher * watcher = new sp::TrackWatcher(m_session, this);
+                    connect(watcher, &sp::TrackWatcher::loaded, playTrack);
+                    connect(watcher, &sp::TrackWatcher::loaded, watcher, &sp::TrackWatcher::deleteLater);
+                    watcher->watch(track);
+                }
+                else
+                {
+                    playTrack();
+                }
             }
             else
             {
