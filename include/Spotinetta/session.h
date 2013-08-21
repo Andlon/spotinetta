@@ -133,6 +133,7 @@ public slots:
     bool load(const Track &track);
     bool play();
     bool pause();
+    void seek(int ms);
 
 protected:
     void customEvent(QEvent *);

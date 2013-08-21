@@ -295,11 +295,34 @@ void Console::processIdleInput(const QStringList &words)
             if (track.isValid())
             {
                 m_session->load(track);
+                m_session->seek(0);
                 m_session->play();
             }
             else
             {
                 out << "play: Invalid track link." << endl;
+            }
+        }
+        else
+        {
+            m_session->play();
+        }
+    }
+    else if (command == "pause")
+    {
+        m_session->pause();
+    }
+    else if (command == "seek")
+    {
+        if (words.count() >= 2)
+        {
+            QString strNum = words.at(1);
+            bool ok;
+            int sec = strNum.toInt(&ok);
+
+            if (ok)
+            {
+                m_session->seek(sec * 1000);
             }
         }
     }

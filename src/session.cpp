@@ -274,6 +274,14 @@ bool Session::pause()
     return false;
 }
 
+void Session::seek(int ms)
+{
+    if (isValid())
+    {
+        sp_session_player_seek(handle(), ms);
+    }
+}
+
 void Session::customEvent(QEvent * e)
 {
     // Only Spotinetta::Event events should be sent to Session
