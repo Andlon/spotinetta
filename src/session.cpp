@@ -329,7 +329,7 @@ void Session::customEvent(QEvent * e)
         emit streamingError(event->error());
         break;
     case (Event::Type::SearchCompleteEvent):
-        emit searchCompleted(Search(static_cast<sp_search *>(event->userdata())));
+        emit objectLoaded();
         break;
 
     default:
