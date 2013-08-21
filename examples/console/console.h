@@ -11,23 +11,33 @@
 // QAudioFormat conversions
 #include <QtMultimedia/QAudioOutput>
 
+#include <Spotinetta/detail/ringbuffer.h>
+
 
 #include <Spotinetta/session.h>
 
 class QAudioOutput;
 class QIODevice;
 
-class AudioOutput : public Spotinetta::AudioOutputInterface
+class AudioOutput : public QObject, public Spotinetta::AudioOutputInterface
 {
+    Q_OBJECT
 public:
+    explicit AudioOutput(QObject * parent = 0);
     ~AudioOutput();
     int deliver(const Spotinetta::AudioFrameCollection &collection);
     void reset();
 
+private slots:
+    void push();
+
 private:
     QPointer<QAudioOutput> m_output;
     QPointer<QIODevice>    m_device;
-    QMutex                 m_lock;
+    QAudioFormat           m_format;
+    QMutex                 m_formatLock;
+
+    Spotinetta::detail::RingBuffer<char, 1024> m_buffer;
 };
 
 class Console : public QObject

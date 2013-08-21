@@ -10,6 +10,7 @@
 
 #include <QCoreApplication>
 #include <QAudioOutput>
+#include <QMetaMethod>
 
 #include <QDebug>
 
@@ -47,49 +48,46 @@ QStringList wordify(const QString &line)
 }
 }
 
+AudioOutput::AudioOutput(QObject *parent)
+    :   QObject(parent), m_buffer(50000)
+{
+
+}
+
 AudioOutput::~AudioOutput()
 {
-    if (!m_output.isNull())
-        m_output->deleteLater();
 }
 
 int AudioOutput::deliver(const Spotinetta::AudioFrameCollection &collection)
 {
-    if (m_output.isNull())
+    sp::AudioFormat newFormat = collection.format();
+
+    bool formatsEqual;
+
     {
-        m_output = new QAudioOutput(collection.format());
+        QMutexLocker locker(&m_formatLock);
+        formatsEqual = newFormat == m_format;
 
-        m_output->setBufferSize(100000000);
-        m_device = m_output->start();
-
-        //qDebug() << "Buffer size: " << m_output->bufferSize();
-
-        QObject::connect(m_output, &QAudioOutput::stateChanged, [] (QAudio::State state) {
-            qDebug() << state;
-        });
+        if (!formatsEqual)
+        {
+            m_format = newFormat;
+        }
     }
 
-    if (m_output->format() == collection.format())
+    if (formatsEqual)
     {
-        qDebug() << m_output->bytesFree();
-        qint64 toWrite = qMin(m_output->bytesFree(), collection.bytes());
+        qint64 bytesPerFrame = newFormat.bytesPerFrame();
+        qint64 toWrite = qMin(collection.bytes(), (int) m_buffer.free());
+        toWrite -= (toWrite % bytesPerFrame);
 
-        // Correct toWrite so that it aligns with frame boundaries
-        toWrite -= (toWrite % m_output->format().bytesPerFrame());
-
-        qint64 written = m_device->write(collection.data(), toWrite);
+        qint64 written = m_buffer.write(collection.data(), toWrite);
         Q_ASSERT(written == toWrite);
 
-        int frames = toWrite / m_output->format().bytesPerFrame();
+        // Replace SLOT macro way of calling with a more modern function pointer approach
+        QMetaObject::invokeMethod(this, "push", Qt::QueuedConnection);
 
-        //qDebug() << "Consumed " << frames << "frames";
-        return frames;
-    }
-    else if (m_output->state() == QAudio::IdleState)
-    {
-        m_output->deleteLater();
-        m_output = new QAudioOutput(collection.format());
-        m_device = m_output->start();
+        // Return number of frames consumed
+        return toWrite / bytesPerFrame;
     }
 
     return 0;
@@ -97,7 +95,47 @@ int AudioOutput::deliver(const Spotinetta::AudioFrameCollection &collection)
 
 void AudioOutput::reset()
 {
-    m_output->reset();
+
+}
+
+void AudioOutput::push()
+{
+    QAudioFormat format;
+    {
+        QMutexLocker locker(&m_formatLock);
+        format = m_format;
+    }
+
+    if (m_output.isNull())
+    {
+        m_output = new QAudioOutput(format, this);
+        m_device = m_output->start();
+
+        int notifyMs = format.durationForBytes(m_output->bufferSize() / 2) / 1000;
+        m_output->setNotifyInterval(notifyMs);
+        qDebug() << "Notify duration: " << notifyMs;
+
+        connect(m_output, &QAudioOutput::notify, this, &AudioOutput::push);
+    }
+
+    //qDebug() << m_buffer.used() << "\t:\t" << (m_output->bufferSize() - m_output->bytesFree());
+
+    if (m_output->format() == format)
+    {
+        qint64 bytesPerFrame = format.bytesPerFrame();
+        qint64 toRead = qMin(m_buffer.used(), (qint64) m_output->bytesFree());
+
+        // Adjust toRead for frame boundaries
+        toRead -= (toRead % bytesPerFrame);
+
+        QByteArray data;
+        data.resize(toRead);
+        qint64 read = m_buffer.read(data.data(), data.size());
+        qint64 written = m_device->write(data);
+
+        Q_ASSERT(read == toRead);
+        Q_ASSERT(written == read);
+    }
 }
 
 Console::Console(Spotinetta::Session *session, QObject *parent)
