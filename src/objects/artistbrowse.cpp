@@ -43,7 +43,7 @@ Artist ArtistBrowse::similarArtistAt(int index) const
 
 int ArtistBrowse::tophitTrackCount() const
 {
-    return isValid() ? sp_artistbrowse_tophit_track(handle(), index) : 0;
+    return isValid() ? sp_artistbrowse_num_tophit_tracks(handle()) : 0;
 }
 
 Track ArtistBrowse::tophitTrackAt(int index) const

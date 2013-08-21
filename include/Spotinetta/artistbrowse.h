@@ -28,6 +28,7 @@ public:
     Artist  artist() const;
     QString biography() const;
     Error   error() const;
+    int backendRequestDuration() const;
 
     int albumCount() const;
     Album albumAt(int index) const;
@@ -40,10 +41,8 @@ public:
 
     int portraitCount() const;
     ImageId portraitAt(int index) const;
-
-    int backendRequestDuration() const;
 };
 
 }
 
-Q_DECLARE_METATYPE(Spotinetta::AlbumBrowse)
+Q_DECLARE_METATYPE(Spotinetta::ArtistBrowse)
