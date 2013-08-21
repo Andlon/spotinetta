@@ -9,6 +9,7 @@
 #include <QStringList>
 
 #include <QCoreApplication>
+#include <QAudioOutput>
 
 #include <iostream>
 
@@ -42,6 +43,50 @@ QStringList wordify(const QString &line)
 {
     return line.split(QRegularExpression("[\\s]"), QString::SkipEmptyParts);
 }
+}
+
+AudioOutput::~AudioOutput()
+{
+    if (!m_output.isNull())
+        m_output->deleteLater();
+}
+
+int AudioOutput::deliver(const Spotinetta::AudioFrameCollection &collection)
+{
+    if (m_output.isNull())
+    {
+        m_output = new QAudioOutput(collection.format());
+        m_device = m_output->start();
+
+//        connect(m_output, &QAudioOutput::stateChanged,
+//                this, &AudioOutput::onStateChanged);
+    }
+
+    if (m_output->format() == collection.format())
+    {
+        qint64 toWrite = qMin(m_output->bytesFree(), collection.bytes());
+
+        // Correct toWrite so that it aligns with frame boundaries
+        toWrite -= (toWrite % m_output->format().bytesPerFrame());
+
+        qint64 written = m_device->write(collection.data(), toWrite);
+        Q_ASSERT(written == toWrite);
+
+        return toWrite / m_output->format().bytesPerFrame();
+    }
+    else if (m_output->state() == QAudio::IdleState)
+    {
+        m_output->deleteLater();
+        m_output = new QAudioOutput(collection.format());
+        m_device = m_output->start();
+    }
+
+    return 0;
+}
+
+void AudioOutput::reset()
+{
+    m_output->reset();
 }
 
 Console::Console(Spotinetta::Session *session, QObject *parent)

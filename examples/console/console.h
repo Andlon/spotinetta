@@ -5,7 +5,30 @@
 #include <QObject>
 #include <QPointer>
 #include <QTextStream>
+#include <QMutex>
+
+// Make sure to include this before session, to get the extra
+// QAudioFormat conversions
+#include <QtMultimedia/QAudioOutput>
+
+
 #include <Spotinetta/session.h>
+
+class QAudioOutput;
+class QIODevice;
+
+class AudioOutput : public Spotinetta::AudioOutputInterface
+{
+public:
+    ~AudioOutput();
+    int deliver(const Spotinetta::AudioFrameCollection &collection);
+    void reset();
+
+private:
+    QPointer<QAudioOutput> m_output;
+    QPointer<QIODevice>    m_device;
+    QMutex                 m_lock;
+};
 
 class Console : public QObject
 {

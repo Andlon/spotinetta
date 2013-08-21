@@ -2,6 +2,11 @@
 
 #include <QtGlobal>
 
+
+#ifdef QT_MULTIMEDIA_LIB
+#include <QtMultimedia/QAudioFormat>
+#endif
+
 namespace Spotinetta {
 
 class AudioFormat {
@@ -24,12 +29,27 @@ public:
 
     int bytesPerFrame() const { return 2 * m_channels; }
 
+#ifdef QT_MULTIMEDIA_LIB
+    operator QAudioFormat() const {
+        QAudioFormat format;
+        format.setChannelCount(m_channels);
+        format.setSampleSize(16);
+        format.setSampleType(QAudioFormat::SignedInt);
+        format.setCodec("audio/pcm");
+        return format;
+    }
+#endif
+
 private:
     SampleType  m_sampleType;
     int         m_sampleRate;
     int         m_channels;
 
     friend bool operator == (const AudioFormat &format1, const AudioFormat &format2);
+
+#ifdef QT_MULTIMEDIA_LIB
+    friend bool operator == (const AudioFormat &af, const QAudioFormat &qaf);
+#endif
 };
 
 class AudioFrameCollection {
@@ -81,5 +101,16 @@ inline AudioFrameCollection::AudioFrameCollection(const char *data, int bytes, c
                "AudioFrameCollection::AudioFrameCollection",
                "Number of bytes delivered must be divisible by the amount of bytes per frame." );
 }
+
+#ifdef QT_MULTIMEDIA_LIB
+inline bool operator == (const AudioFormat &af, const QAudioFormat &qaf)
+{
+    return af.bytesPerFrame() == qaf.bytesPerFrame()
+        && af.channels() == qaf.channelCount()
+        && af.sampleRate() == qaf.sampleRate()
+        && qaf.sampleType() == QAudioFormat::SignedInt
+        && qaf.codec() == "audio/pcm";
+}
+#endif
 
 }

@@ -12,11 +12,12 @@ int main(int argc, char *argv[])
 
     QCoreApplication a(argc, argv);
 
+    AudioOutput output;
+
     SessionConfig config;
     config.applicationKey = ApplicationKey(g_appkey, g_appkey_size);
     config.userAgent = "Spotinetta Console";
-    config.settingsLocation = "D:\\spotinetta";
-    config.cacheLocation = "D:\\spotinetta";
+    config.audioOutput = &output;
 
     qDebug() << "Creating session...";
     Session session(config);
