@@ -32,6 +32,8 @@ private slots:
     void push();
 
 private:
+    void setupOutput(const QAudioFormat &format);
+
     QPointer<QAudioOutput> m_output;
     QPointer<QIODevice>    m_device;
     QAudioFormat           m_format;

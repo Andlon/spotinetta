@@ -68,7 +68,7 @@ int AudioOutput::deliver(const Spotinetta::AudioFrameCollection &collection)
         QMutexLocker locker(&m_formatLock);
         formatsEqual = newFormat == m_format;
 
-        if (!formatsEqual)
+        if (!formatsEqual && m_buffer.used() == 0)
         {
             m_format = newFormat;
         }
@@ -95,7 +95,7 @@ int AudioOutput::deliver(const Spotinetta::AudioFrameCollection &collection)
 
 void AudioOutput::reset()
 {
-
+    qDebug() << "Should reset.";
 }
 
 void AudioOutput::push()
@@ -108,14 +108,7 @@ void AudioOutput::push()
 
     if (m_output.isNull())
     {
-        m_output = new QAudioOutput(format, this);
-        m_device = m_output->start();
-
-        int notifyMs = format.durationForBytes(m_output->bufferSize() / 2) / 1000;
-        m_output->setNotifyInterval(notifyMs);
-        qDebug() << "Notify duration: " << notifyMs;
-
-        connect(m_output, &QAudioOutput::notify, this, &AudioOutput::push);
+        setupOutput(format);
     }
 
     //qDebug() << m_buffer.used() << "\t:\t" << (m_output->bufferSize() - m_output->bytesFree());
@@ -136,6 +129,23 @@ void AudioOutput::push()
         Q_ASSERT(read == toRead);
         Q_ASSERT(written == read);
     }
+    else if (m_output->state() != QAudio::ActiveState)
+    {
+        m_output->deleteLater();
+        m_output.clear();
+        setupOutput(format);
+    }
+}
+
+void AudioOutput::setupOutput(const QAudioFormat &format)
+{
+    m_output = new QAudioOutput(format, this);
+    m_device = m_output->start();
+
+    int notifyMs = format.durationForBytes(m_output->bufferSize() / 2) / 1000;
+    m_output->setNotifyInterval(notifyMs);
+
+    connect(m_output, &QAudioOutput::notify, this, &AudioOutput::push);
 }
 
 Console::Console(Spotinetta::Session *session, QObject *parent)
