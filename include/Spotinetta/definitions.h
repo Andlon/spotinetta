@@ -5,7 +5,11 @@
 #include <QString>
 #include <libspotify/api.h>
 
+#include "error.h"
+
 namespace Spotinetta {
+
+typedef const byte * ImageId;
 
 class Track;
 class Album;
