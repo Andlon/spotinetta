@@ -34,6 +34,7 @@ public:
         QAudioFormat format;
         format.setChannelCount(m_channels);
         format.setSampleSize(16);
+        format.setSampleRate(m_sampleRate);
         format.setSampleType(QAudioFormat::SignedInt);
         format.setCodec("audio/pcm");
         return format;

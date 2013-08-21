@@ -11,6 +11,8 @@
 #include <QCoreApplication>
 #include <QAudioOutput>
 
+#include <QDebug>
+
 #include <iostream>
 
 namespace sp = Spotinetta;
@@ -56,14 +58,20 @@ int AudioOutput::deliver(const Spotinetta::AudioFrameCollection &collection)
     if (m_output.isNull())
     {
         m_output = new QAudioOutput(collection.format());
+
+        m_output->setBufferSize(100000000);
         m_device = m_output->start();
 
-//        connect(m_output, &QAudioOutput::stateChanged,
-//                this, &AudioOutput::onStateChanged);
+        //qDebug() << "Buffer size: " << m_output->bufferSize();
+
+        QObject::connect(m_output, &QAudioOutput::stateChanged, [] (QAudio::State state) {
+            qDebug() << state;
+        });
     }
 
     if (m_output->format() == collection.format())
     {
+        qDebug() << m_output->bytesFree();
         qint64 toWrite = qMin(m_output->bytesFree(), collection.bytes());
 
         // Correct toWrite so that it aligns with frame boundaries
@@ -72,7 +80,10 @@ int AudioOutput::deliver(const Spotinetta::AudioFrameCollection &collection)
         qint64 written = m_device->write(collection.data(), toWrite);
         Q_ASSERT(written == toWrite);
 
-        return toWrite / m_output->format().bytesPerFrame();
+        int frames = toWrite / m_output->format().bytesPerFrame();
+
+        //qDebug() << "Consumed " << frames << "frames";
+        return frames;
     }
     else if (m_output->state() == QAudio::IdleState)
     {
@@ -222,6 +233,25 @@ void Console::processIdleInput(const QStringList &words)
             {
                 // Let user log out by typing both "logout" and "log out"
                 logout();
+            }
+        }
+    }
+    else if (command == "play")
+    {
+        if (words.count() >= 2)
+        {
+            const QString url = words.at(1);
+            sp::Link link(url);
+            sp::Track track = link.track();
+
+            if (track.isValid())
+            {
+                m_session->load(track);
+                m_session->play();
+            }
+            else
+            {
+                out << "play: Invalid track link." << endl;
             }
         }
     }
