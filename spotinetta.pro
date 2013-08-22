@@ -71,4 +71,6 @@ HEADERS += \
     include/Spotinetta/audiooutput.h \
     include/Spotinetta/basicwatcher.h \
     include/Spotinetta/artistbrowse.h \
-    include/Spotinetta/albumbrowse.h
+    include/Spotinetta/albumbrowse.h \
+    include/Spotinetta/objects.h \
+    include/Spotinetta/Spotinetta

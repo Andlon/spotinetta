@@ -16,7 +16,7 @@ unix:LIBS += -lspotify
 
 # Add necessary includes and lib for Spotinetta. Need to improve this,
 # especially for Linux, which atm is untested
-INCLUDEPATH += "$$PWD/include"
+INCLUDEPATH += $$PWD/include
 win32:PRE_TARGETDEPS += $$PWD/lib/spotinettad.lib
 
 LIBS += -L$$PWD/lib
