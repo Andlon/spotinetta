@@ -3,6 +3,7 @@
 #include "basicwatcher.h"
 #include "playlistcontainerwatcher.h"
 #include "playlistwatcher.h"
+#include "imagewatcher.h"
 
 #include "objects.h"
 
