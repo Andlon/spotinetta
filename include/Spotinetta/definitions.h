@@ -41,4 +41,6 @@ enum class ImageSize {
     Lage = SP_IMAGE_SIZE_LARGE
 };
 
+void registerTypes();
+
 }

@@ -1,9 +1,5 @@
 #include <Spotinetta/session.h>
-#include <Spotinetta/track.h>
-#include <Spotinetta/image.h>
-#include <Spotinetta/album.h>
-#include <Spotinetta/artist.h>
-#include <Spotinetta/link.h>
+#include <Spotinetta/objects.h>
 #include "events.h"
 
 #include <QCoreApplication>
@@ -12,6 +8,25 @@
 #include <QDebug>
 
 namespace Spotinetta {
+
+void registerTypes()
+{
+    qRegisterMetaType<Track>("Spotinetta::Track");
+    qRegisterMetaType<Album>("Spotinetta::Album");
+    qRegisterMetaType<Artist>("Spotinetta::Artist");
+    qRegisterMetaType<Playlist>("Spotinetta::Playlist");
+    qRegisterMetaType<PlaylistContainer>("Spotinetta::PlaylistContainer");
+    qRegisterMetaType<Search>("Spotinetta::Search");
+    qRegisterMetaType<ArtistBrowse>("Spotinetta::ArtistBrowse");
+    qRegisterMetaType<AlbumBrowse>("Spotinetta::AlbumBrowse");
+    qRegisterMetaType<Image>("Spotinetta::Image");
+    qRegisterMetaType<Link>("Spotinetta::Link");
+    qRegisterMetaType<User>("Spotinetta::User");
+    qRegisterMetaType<TrackList>("Spotinetta::TrackList");
+    qRegisterMetaType<AlbumList>("Spotinetta::AlbumList");
+    qRegisterMetaType<SearchList>("Spotinetta::SearchList");
+    qRegisterMetaType<ImageList>("Spotinetta::ImageList");
+}
 
 namespace {
 
