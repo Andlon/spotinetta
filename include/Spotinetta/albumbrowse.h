@@ -33,9 +33,11 @@ public:
 
     int copyrightCount() const;
     QString copyrightAt(int index) const;
+    QStringList copyrights() const;
 
     int trackCount() const;
     Track trackAt(int index) const;
+    TrackList tracks() const;
 };
 
 }
