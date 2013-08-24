@@ -3,8 +3,6 @@
 #include "playlist.h"
 #include <QObject>
 
-class QEvent;
-
 namespace Spotinetta {
 
 class PlaylistWatcher : public QObject {

@@ -113,8 +113,8 @@ signals:
     void playbackStateChanged();
 
     void metadataUpdated();
-
     void objectLoaded();
+    void imageLoaded();
 
     void loggedIn();
     void loggedOut();

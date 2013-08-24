@@ -47,7 +47,8 @@ SOURCES += \
     src/watchers/playlistcontainerwatcher.cpp \
     src/watchers/playlistwatcher.cpp \
     src/objects/artistbrowse.cpp \
-    src/objects/albumbrowse.cpp
+    src/objects/albumbrowse.cpp \
+    src/watchers/imagewatcher.cpp
 
 HEADERS += \
     include/Spotinetta/track.h \
@@ -73,4 +74,5 @@ HEADERS += \
     include/Spotinetta/artistbrowse.h \
     include/Spotinetta/albumbrowse.h \
     include/Spotinetta/objects.h \
-    include/Spotinetta/Spotinetta
+    include/Spotinetta/Spotinetta \
+    include/Spotinetta/imagewatcher.h
