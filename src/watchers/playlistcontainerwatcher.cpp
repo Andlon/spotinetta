@@ -1,29 +1,18 @@
 #include <Spotinetta/playlistcontainerwatcher.h>
+#include <Spotinetta/playlist.h>
 #include <Spotinetta/session.h>
 
 #include <QCoreApplication>
+#include <QMetaMethod>
 
 namespace Spotinetta {
 
 namespace {
 
 void SP_CALLCONV handleContainerLoaded(sp_playlistcontainer *pc, void *userdata);
-
-
-struct ContainerEvent : public QEvent {
-public:
-    enum class Type {
-        Loaded = QEvent::User,
-        PlaylistAdded = QEvent::User + 1,
-        PlaylistMoved = QEvent::User + 2,
-        PlaylistRemoved = QEvent::User + 3
-    };
-
-    explicit ContainerEvent(Type type) : QEvent(static_cast<QEvent::Type>(type)) { }
-
-    int position;
-    int newPosition;
-};
+void SP_CALLCONV handlePlaylistAdded(sp_playlistcontainer *pc, sp_playlist *playlist, int position, void *userdata);
+void SP_CALLCONV handlePlaylistRemoved(sp_playlistcontainer *pc, sp_playlist *playlist, int position, void *userdata);
+void SP_CALLCONV handlePlaylistMoved(sp_playlistcontainer *pc, sp_playlist *playlist, int position, void *userdata);
 
 }
 
@@ -79,28 +68,34 @@ void PlaylistContainerWatcher::unsubscribe()
     }
 }
 
-void PlaylistContainerWatcher::customEvent(QEvent * event)
-{
-    Q_ASSERT(event->type() >= QEvent::User && event->type() <= QEvent::User + 3);
-
-    switch (static_cast<ContainerEvent::Type>(event->type()))
-    {
-    case (ContainerEvent::Type::Loaded):
-        // Container loaded
-        emit loaded();
-
-    default:
-        break;
-    }
-}
-
 namespace {
 
 void SP_CALLCONV handleContainerLoaded(sp_playlistcontainer *, void *userdata)
 {
     PlaylistContainerWatcher * watcher = static_cast<PlaylistContainerWatcher *>(userdata);
-    ContainerEvent event(ContainerEvent::Type::Loaded);
-    QCoreApplication::sendEvent(watcher, &event);
+    QMetaMethod signal = QMetaMethod::fromSignal(&PlaylistContainerWatcher::loaded);
+    signal.invoke(watcher, Qt::DirectConnection);
+}
+
+void SP_CALLCONV handlePlaylistAdded(sp_playlistcontainer *, sp_playlist *, int position, void *userdata)
+{
+    PlaylistContainerWatcher * watcher = static_cast<PlaylistContainerWatcher *>(userdata);
+    QMetaMethod signal = QMetaMethod::fromSignal(&PlaylistContainerWatcher::playlistAdded);
+    signal.invoke(watcher, Qt::DirectConnection, Q_ARG(int, position));
+}
+
+void SP_CALLCONV handlePlaylistRemoved(sp_playlistcontainer *, sp_playlist *, int position, void *userdata)
+{
+    PlaylistContainerWatcher * watcher = static_cast<PlaylistContainerWatcher *>(userdata);
+    QMetaMethod signal = QMetaMethod::fromSignal(&PlaylistContainerWatcher::playlistRemoved);
+    signal.invoke(watcher, Qt::DirectConnection, Q_ARG(int, position));
+}
+
+void SP_CALLCONV handlePlaylistMoved(sp_playlistcontainer *, sp_playlist *, int position, void *userdata)
+{
+    PlaylistContainerWatcher * watcher = static_cast<PlaylistContainerWatcher *>(userdata);
+    QMetaMethod signal = QMetaMethod::fromSignal(&PlaylistContainerWatcher::playlistMoved);
+    signal.invoke(watcher, Qt::DirectConnection, Q_ARG(int, position));
 }
 
 }

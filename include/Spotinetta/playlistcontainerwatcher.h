@@ -17,9 +17,9 @@ public:
 
 signals:
     void loaded();
-
-protected:
-    void customEvent(QEvent *);
+    void playlistAdded(int position);
+    void playlistRemoved(int position);
+    void playlistMoved(int oldPosition, int newPosition);
 
 private:
     void subscribe();
