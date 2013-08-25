@@ -3,6 +3,8 @@
 #include "playlist.h"
 #include <QObject>
 
+template <class T> class QVector;
+
 namespace Spotinetta {
 
 class PlaylistWatcher : public QObject {
@@ -16,9 +18,21 @@ public:
 
 signals:
     void stateChanged();
+    void renamed();
+    void updateStarted();
+    void updateFinished();
+    void metadataUpdated();
+    void descriptionChanged();
+    void imageChanged();
+    void subscribersChanged();
 
-protected:
-    void customEvent(QEvent *);
+    void tracksAdded(const Spotinetta::TrackList &tracks, int position);
+    void tracksRemoved(const QVector<int> &positions);
+    void tracksMoved(const QVector<int> &positions, int newPosition);
+
+    void trackSeenChanged(int position);
+    void trackMessageChanged(int position);
+    void trackCreatedChanged(int position);
 
 private:
     void subscribe();
