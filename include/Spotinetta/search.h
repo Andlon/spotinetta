@@ -49,3 +49,4 @@ public:
 }
 
 Q_DECLARE_METATYPE(Spotinetta::Search)
+Q_DECLARE_METATYPE(Spotinetta::SearchList)

@@ -58,3 +58,4 @@ public:
 }
 
 Q_DECLARE_METATYPE(Spotinetta::Track)
+Q_DECLARE_METATYPE(Spotinetta::TrackList)

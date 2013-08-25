@@ -62,3 +62,4 @@ public:
 }
 
 Q_DECLARE_METATYPE(Spotinetta::Album)
+Q_DECLARE_METATYPE(Spotinetta::AlbumList)

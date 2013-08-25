@@ -33,3 +33,4 @@ public:
 }
 
 Q_DECLARE_METATYPE(Spotinetta::Image)
+Q_DECLARE_METATYPE(Spotinetta::ImageList)

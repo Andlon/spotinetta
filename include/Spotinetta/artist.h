@@ -27,3 +27,4 @@ public:
 }
 
 Q_DECLARE_METATYPE(Spotinetta::Artist)
+Q_DECLARE_METATYPE(Spotinetta::ArtistList)
