@@ -2,7 +2,6 @@
 #include <Spotinetta/session.h>
 #include <Spotinetta/track.h>
 
-#include <QCoreApplication>
 #include <QMetaMethod>
 
 namespace Spotinetta {
@@ -21,7 +20,6 @@ void SP_CALLCONV handleSubscriberschanged(sp_playlist *pl, void *userdata);
 void SP_CALLCONV handleTrackSeenChanged(sp_playlist *pl, int position, bool seen, void *userdata);
 void SP_CALLCONV handleTrackMessageChanged(sp_playlist *pl, int position, const char *message, void *userdata);
 void SP_CALLCONV handleTrackCreatedChanged(sp_playlist *pl, int position, sp_user *user, int when, void *userdata);
-
 }
 
 PlaylistWatcher::PlaylistWatcher(const Session *session, QObject *parent)

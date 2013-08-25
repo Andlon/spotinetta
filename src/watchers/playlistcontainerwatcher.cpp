@@ -2,18 +2,15 @@
 #include <Spotinetta/playlist.h>
 #include <Spotinetta/session.h>
 
-#include <QCoreApplication>
 #include <QMetaMethod>
 
 namespace Spotinetta {
 
 namespace {
-
 void SP_CALLCONV handleContainerLoaded(sp_playlistcontainer *pc, void *userdata);
 void SP_CALLCONV handlePlaylistAdded(sp_playlistcontainer *pc, sp_playlist *playlist, int position, void *userdata);
 void SP_CALLCONV handlePlaylistRemoved(sp_playlistcontainer *pc, sp_playlist *playlist, int position, void *userdata);
 void SP_CALLCONV handlePlaylistMoved(sp_playlistcontainer *pc, sp_playlist *playlist, int position, void *userdata);
-
 }
 
 PlaylistContainerWatcher::PlaylistContainerWatcher(const Session *session, QObject *parent)
