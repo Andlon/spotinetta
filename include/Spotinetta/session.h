@@ -128,6 +128,7 @@ signals:
 public slots:
     void login(const QString &username, const QString &password, bool rememberMe = false);
     void logout();
+    bool relogin();
 
     bool load(const Track &track);
     bool play();

@@ -232,6 +232,12 @@ void Session::logout()
         sp_session_logout(handle());
 }
 
+bool Session::relogin()
+{
+    Error err = static_cast<Error>(sp_session_relogin(handle()));
+    return err == Error::Ok;
+}
+
 bool Session::play()
 {
     if (isValid())
