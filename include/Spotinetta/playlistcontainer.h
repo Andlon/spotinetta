@@ -29,3 +29,5 @@ public:
 };
 
 }
+
+Q_DECLARE_METATYPE(Spotinetta::PlaylistContainer)
