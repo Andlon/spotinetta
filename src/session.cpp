@@ -176,7 +176,7 @@ Session::PlaybackState Session::playbackState() const
     return m_playbackState;
 }
 
-PlaylistContainer Session::rootContainer() const
+PlaylistContainer Session::playlistContainer() const
 {
     return m_rootContainer;
 }

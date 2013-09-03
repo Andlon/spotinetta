@@ -69,6 +69,7 @@ class Session : public QObject {
 
     Q_PROPERTY(ConnectionState connectionState READ connectionState NOTIFY connectionStateChanged)
     Q_PROPERTY(PlaybackState playbackState READ playbackState NOTIFY playbackStateChanged)
+    Q_PROPERTY(PlaylistContainer playlistContainer READ playlistContainer NOTIFY connectionStateChanged)
 
 public:
     typedef ::Spotinetta::Error Error;
@@ -97,7 +98,7 @@ public:
     ConnectionState connectionState() const;
     PlaybackState   playbackState() const;
 
-    PlaylistContainer rootContainer() const;
+    PlaylistContainer playlistContainer() const;
 
     Image createImage(ImageId id) const;
     Image createImageFromLink(const Link &link) const;
