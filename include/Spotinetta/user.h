@@ -26,3 +26,5 @@ public:
 };
 
 }
+
+Q_DECLARE_METATYPE(Spotinetta::User)
