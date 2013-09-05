@@ -41,7 +41,7 @@ PlaylistWatcher::PlaylistWatcher(const Session *session, QObject *parent)
     m_callbacks.track_seen_changed = &handleTrackSeenChanged;
 
     // Clean up callbacks by watching an invalid object before session release
-    connect(session, &Session::destroyed, [this] {
+    connect(session, &Session::released, [this] {
         watch(Playlist());
     });
 }
