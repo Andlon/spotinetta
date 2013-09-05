@@ -140,7 +140,7 @@ Session::~Session()
 {
     // Reset playlistcontainer so that the deref function is not called
     // after session destruction
-    //m_rootContainer = PlaylistContainer();
+    m_rootContainer = PlaylistContainer();
 
     // When we reach the end of this scope, the session is released,
     // thus we emit this signal before, so that watchers and others may react on it
