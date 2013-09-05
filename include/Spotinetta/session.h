@@ -69,7 +69,7 @@ class Session : public QObject {
 
     Q_PROPERTY(ConnectionState connectionState READ connectionState NOTIFY connectionStateChanged)
     Q_PROPERTY(PlaybackState playbackState READ playbackState NOTIFY playbackStateChanged)
-    Q_PROPERTY(PlaylistContainer playlistContainer READ playlistContainer NOTIFY connectionStateChanged)
+    Q_PROPERTY(Spotinetta::PlaylistContainer playlistContainer READ playlistContainer NOTIFY connectionStateChanged)
 
 public:
     typedef ::Spotinetta::Error Error;
@@ -88,6 +88,7 @@ public:
     };
 
     explicit Session(const SessionConfig &config, QObject * parent = 0);
+    ~Session();
 
     bool            isValid() const;
     Error           error() const;
@@ -125,6 +126,8 @@ signals:
     void connectionError(Error error);
     void streamingError(Error error);
     void log(QString message);
+
+    void released();
 
 public slots:
     void login(const QString &username, const QString &password, bool rememberMe = false);

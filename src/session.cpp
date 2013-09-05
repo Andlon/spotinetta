@@ -11,21 +11,21 @@ namespace Spotinetta {
 
 void registerTypes()
 {
-    qRegisterMetaType<Track>("Spotinetta::Track");
-    qRegisterMetaType<Album>("Spotinetta::Album");
-    qRegisterMetaType<Artist>("Spotinetta::Artist");
-    qRegisterMetaType<Playlist>("Spotinetta::Playlist");
-    qRegisterMetaType<PlaylistContainer>("Spotinetta::PlaylistContainer");
-    qRegisterMetaType<Search>("Spotinetta::Search");
-    qRegisterMetaType<ArtistBrowse>("Spotinetta::ArtistBrowse");
-    qRegisterMetaType<AlbumBrowse>("Spotinetta::AlbumBrowse");
-    qRegisterMetaType<Image>("Spotinetta::Image");
-    qRegisterMetaType<Link>("Spotinetta::Link");
-    qRegisterMetaType<User>("Spotinetta::User");
-    qRegisterMetaType<TrackList>("Spotinetta::TrackList");
-    qRegisterMetaType<AlbumList>("Spotinetta::AlbumList");
-    qRegisterMetaType<SearchList>("Spotinetta::SearchList");
-    qRegisterMetaType<ImageList>("Spotinetta::ImageList");
+    qRegisterMetaType<Spotinetta::Track>();
+    qRegisterMetaType<Spotinetta::Album>();
+    qRegisterMetaType<Spotinetta::Artist>();
+    qRegisterMetaType<Spotinetta::Playlist>();
+    qRegisterMetaType<Spotinetta::PlaylistContainer>();
+    qRegisterMetaType<Spotinetta::Search>();
+    qRegisterMetaType<Spotinetta::ArtistBrowse>();
+    qRegisterMetaType<Spotinetta::AlbumBrowse>();
+    qRegisterMetaType<Spotinetta::Image>();
+    qRegisterMetaType<Spotinetta::Link>();
+    qRegisterMetaType<Spotinetta::User>();
+    qRegisterMetaType<Spotinetta::TrackList>();
+    qRegisterMetaType<Spotinetta::AlbumList>();
+    qRegisterMetaType<Spotinetta::SearchList>();
+    qRegisterMetaType<Spotinetta::ImageList>();
 }
 
 namespace {
@@ -134,6 +134,17 @@ Session::Session(const SessionConfig &config, QObject *parent)
         m_handle.reset(session, &sp_session_release);
         processEvents();
     }
+}
+
+Session::~Session()
+{
+    // Reset playlistcontainer so that the deref function is not called
+    // after session destruction
+    //m_rootContainer = PlaylistContainer();
+
+    // When we reach the end of this scope, the session is released,
+    // thus we emit this signal before, so that watchers and others may react on it
+    emit released();
 }
 
 void Session::processEvents()
