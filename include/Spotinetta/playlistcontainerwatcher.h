@@ -25,6 +25,9 @@ private:
     void subscribe();
     void unsubscribe();
 
+private slots:
+    void onReleased();
+
 private:
     sp_playlistcontainer_callbacks  m_callbacks;
     PlaylistContainer               m_watched;

@@ -20,11 +20,14 @@ PlaylistContainerWatcher::PlaylistContainerWatcher(const Session *session, QObje
     m_callbacks.container_loaded = &handleContainerLoaded;
 
     // When the session's being released, we need to make sure any registered callbacks
-    // are unregistered. We therefore connect to the Session destroyed() signal and
+    // are unregistered. We therefore connect to the Session released() signal and
     // simply watch an invalid PlaylistContainer
-    connect(session, &Session::released, [this] {
-        watch(PlaylistContainer());
-    });
+    connect(session, &Session::released, this, &PlaylistContainerWatcher::onReleased);
+}
+
+void PlaylistContainerWatcher::onReleased()
+{
+    watch(PlaylistContainer());
 }
 
 PlaylistContainerWatcher::~PlaylistContainerWatcher()
