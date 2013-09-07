@@ -42,7 +42,6 @@ PlaylistContainer PlaylistContainerWatcher::watched() const
 
 void PlaylistContainerWatcher::watch(const PlaylistContainer &object)
 {
-    qDebug() << "Handle: " << m_watched.handle();
     if (object != watched())
     {
         unsubscribe();
