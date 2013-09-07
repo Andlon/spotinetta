@@ -138,13 +138,15 @@ Session::Session(const SessionConfig &config, QObject *parent)
 
 Session::~Session()
 {
+    // When we reach the end of this scope, the session is released,
+    // thus we emit this signal before, so that watchers and others may react on it
+    emit released();
+
     // Reset playlistcontainer so that the deref function is not called
     // after session destruction
     m_rootContainer = PlaylistContainer();
 
-    // When we reach the end of this scope, the session is released,
-    // thus we emit this signal before, so that watchers and others may react on it
-    emit released();
+
 }
 
 void Session::processEvents()
