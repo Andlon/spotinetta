@@ -3,6 +3,7 @@
 #include <Spotinetta/artist.h>
 #include <Spotinetta/album.h>
 #include <Spotinetta/image.h>
+#include <Spotinetta/artistbrowse.h>
 
 namespace Spotinetta {
 
@@ -56,6 +57,28 @@ Artist Link::artist() const
 Album Link::album() const
 {
     return isValid() ? Album(sp_link_as_album(handle())) : Album();
+}
+
+Link Link::fromAlbumCover(const Album &album, ImageSize size)
+{
+    return album.isValid() ?
+                Link(sp_link_create_from_album_cover(album.handle(), static_cast<sp_image_size>(size)))
+              : Link();
+}
+
+Link Link::fromArtistPortrait(const Artist &artist, ImageSize size)
+{
+    return artist.isValid() ?
+                Link(sp_link_create_from_artist_portrait(artist.handle(), static_cast<sp_image_size>(size)))
+              : Link();
+}
+
+Link Link::fromArtistBrowsePortrait(const ArtistBrowse &browse, int index)
+{
+    return browse.isValid() ?
+                Link(sp_link_create_from_artistbrowse_portrait(browse.handle(), index))
+              : Link();
+
 }
 
 }

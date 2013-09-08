@@ -38,7 +38,7 @@ typedef QList<Image>    ImageList;
 enum class ImageSize {
     Small = SP_IMAGE_SIZE_SMALL,
     Normal = SP_IMAGE_SIZE_NORMAL,
-    Lage = SP_IMAGE_SIZE_LARGE
+    Large = SP_IMAGE_SIZE_LARGE
 };
 
 void registerTypes();

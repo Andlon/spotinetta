@@ -47,8 +47,9 @@ public:
     Album       album() const;
     Playlist    playlist() const;
 
-    //static Link fromAlbumCover(const Album &album, ...)
-    //static Link fromArtistPortrait(const Artist &artist, ...)
+    static Link fromAlbumCover(const Album &album, ImageSize size);
+    static Link fromArtistPortrait(const Artist &artist, ImageSize size);
+    static Link fromArtistBrowsePortrait(const ArtistBrowse &browse, int index);
 };
 
 }
