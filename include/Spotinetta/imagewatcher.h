@@ -21,6 +21,9 @@ signals:
 protected:
     void customEvent(QEvent *);
 
+private slots:
+    void onReleased();
+
 private:
     void subscribe();
     void unsubscribe();

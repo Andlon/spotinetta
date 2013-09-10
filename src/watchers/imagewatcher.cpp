@@ -12,14 +12,19 @@ void SP_CALLCONV handleImageLoaded(sp_image * image, void * userdata);
 ImageWatcher::ImageWatcher(const Session *session, QObject *parent)
     :   QObject(parent)
 {
-    connect(session, &Session::destroyed, [this] {
-        watch(Image());
-    });
+    connect(session, &Session::released, this, &ImageWatcher::onReleased);
 }
 
 ImageWatcher::~ImageWatcher()
 {
     unsubscribe();
+}
+
+void ImageWatcher::onReleased()
+{
+    // Watching an invalid image clears any added callbacks
+    // (which is essential before a session is released, thus being placed here
+    watch(Image());
 }
 
 Image ImageWatcher::watched() const

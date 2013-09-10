@@ -138,6 +138,10 @@ Session::Session(const SessionConfig &config, QObject *parent)
 
 Session::~Session()
 {
+    // libspotify seems to crash if we don't unload the current track
+    // before exiting (unless we've properly logged out)
+    sp_session_player_unload(handle());
+
     // When we reach the end of this scope, the session is released,
     // thus we emit this signal before, so that watchers and others may react on it
     emit released();
