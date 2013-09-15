@@ -108,7 +108,7 @@ public:
                          int albumOffset, int maxAlbums,
                          int artistOffset, int maxArtists,
                          int playlistOffset, int maxPlaylists,
-                         Search::Type type);
+                         Search::Type type) const;
 
 signals:
     void connectionStateChanged();

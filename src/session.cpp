@@ -223,15 +223,19 @@ Image Session::createImageFromLink(const Link &link) const
 
 Search Session::createSearch(const QString &query, int trackOffset, int maxTracks, int albumOffset,
                              int maxAlbums, int artistOffset, int maxArtists, int playlistOffset,
-                             int maxPlaylists, Search::Type type)
+                             int maxPlaylists, Search::Type type) const
 {
     if (isValid())
     {
         QByteArray queryData = query.toUtf8();
+        // Use const_cast here (ugh!) because creating a search object
+        // does not actually modify the Session
         return Search(sp_search_create(handle(), queryData.constData(), trackOffset, maxTracks,
                                        albumOffset, maxAlbums, artistOffset, maxArtists,
                                        playlistOffset, maxPlaylists, static_cast<sp_search_type>(type),
-                                       &handleSearchComplete, static_cast<void *>(this)), false);
+                                       &handleSearchComplete,
+                                       static_cast<void *>(const_cast<Session *>(this))),
+                                       false);
     }
 
     return Search();
