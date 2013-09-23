@@ -117,7 +117,9 @@ inline BasicObject<HandleType, RefFunc, DerefFunc> & BasicObject<HandleType, Ref
 template <typename HandleType, sp_error RefFunc(HandleType *), sp_error DerefFunc(HandleType *), bool IsLoadedFunc(HandleType *)>
 bool BasicLoadableObject<HandleType, RefFunc, DerefFunc, IsLoadedFunc>::isLoaded() const
 {
-    return isValid() ? IsLoadedFunc(BasicLoadableObject<HandleType, RefFunc, DerefFunc, IsLoadedFunc>::handle()) : false;
+    return BasicLoadableObject<HandleType, RefFunc, DerefFunc, IsLoadedFunc>::isValid()
+            ? IsLoadedFunc(BasicLoadableObject<HandleType, RefFunc, DerefFunc, IsLoadedFunc>::handle())
+            : false;
 }
 
 

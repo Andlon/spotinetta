@@ -34,7 +34,7 @@ private:
 };
 
 template <class WatchedType, void (Session::*LoadedSignal)()>
-inline BasicWatcher<WatchedType, LoadedSignal>::BasicWatcher(const Session * session, QObject * parent = 0)
+inline BasicWatcher<WatchedType, LoadedSignal>::BasicWatcher(const Session * session, QObject * parent)
     :   LoadedSignalProvider(parent), m_session(session)
 { }
 
