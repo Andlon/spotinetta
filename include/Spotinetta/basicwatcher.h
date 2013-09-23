@@ -50,13 +50,13 @@ inline void BasicWatcher<WatchedType, LoadedSignal>::watch(const WatchedType &ob
     if (object != watched())
     {
         if (m_watched.isValid() && !m_session.isNull())
-            disconnect(m_session, LoadedSignal, this, &BasicWatcher<WatchedType, LoadedSignal>::checkLoaded);
+            disconnect(m_session.data(), LoadedSignal, this, &BasicWatcher<WatchedType, LoadedSignal>::checkLoaded);
 
         m_watched = object;
 
         if (m_watched.isValid() && !m_watched.isLoaded() && !m_session.isNull())
         {
-            connect(m_session, LoadedSignal, this, &BasicWatcher<WatchedType, LoadedSignal>::checkLoaded);
+            connect(m_session.data(), LoadedSignal, this, &BasicWatcher<WatchedType, LoadedSignal>::checkLoaded);
         }
     }
 }
@@ -66,7 +66,7 @@ inline void BasicWatcher<WatchedType, LoadedSignal>::checkLoaded()
 {
     if (watched().isLoaded() && !m_session.isNull())
     {
-        disconnect(m_session, LoadedSignal, this, &BasicWatcher<WatchedType, LoadedSignal>::checkLoaded);
+        disconnect(m_session.data(), LoadedSignal, this, &BasicWatcher<WatchedType, LoadedSignal>::checkLoaded);
         emit loaded();
     }
 }
