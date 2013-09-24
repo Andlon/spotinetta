@@ -130,24 +130,18 @@ inline qint64 RingBuffer<T, ChunkSize>::read(T * data, qint64 maxSize)
     return read;
 }
 
-// Clears the buffer (blocks until everything is read)
+// Clears the buffer. Note: This function is NOT threadsafe and
+// sufficient synchronization must be applied
 template <class T, qint64 ChunkSize>
 inline void RingBuffer<T, ChunkSize>::clear()
 {
-    // Acquire the entire buffer as if we're writing.
-    // This will block until the buffer is empty
-    // (assumes the reader is continously reading)
-    m_used.acquire(m_size);
-
-    // At this point, the reader will have read all data,
-    // thus all of m_free will also be acquired. Thus, the buffer
-    // is conceptually empty and we have exclusive access.
-    // Reset variables
     m_start = 0;
     m_end = 0;
+    m_used.release(used());
+    m_free.acquire(used());
 
-    // Release acquired resources (buffer is cleared and writing is allowed again)
-    m_used.release(m_size);
+    Q_ASSERT(m_used.available() == m_size);
+    Q_ASSERT(m_free.available() == 0);
 }
 
 
