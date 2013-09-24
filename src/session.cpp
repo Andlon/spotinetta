@@ -289,6 +289,14 @@ bool Session::load(const Track &track)
     return false;
 }
 
+void Session::unload()
+{
+    if (isValid())
+    {
+        sp_session_player_unload(handle());
+    }
+}
+
 bool Session::pause()
 {
     if (isValid())
@@ -398,7 +406,7 @@ void SP_CALLCONV handleNotifyMainThread(sp_session * s) {
 
 void SP_CALLCONV handleLogMessage(sp_session * s, const char * message) {
     Session * session = static_cast<Session *>(sp_session_userdata(s));
-    QCoreApplication::postEvent(session, new Event(Event::Type::LogEvent, Error::Ok, QByteArray(message)));
+    QCoreApplication::postEvent(session, new Event(Event::Type::LogEvent, Error::Ok, QByteArray(message).trimmed()));
 }
 
 void SP_CALLCONV handleMetadataUpdated(sp_session * s) {

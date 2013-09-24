@@ -135,6 +135,7 @@ public slots:
     bool relogin();
 
     bool load(const Track &track);
+    void unload();
     bool play();
     bool pause();
     void seek(int ms);
