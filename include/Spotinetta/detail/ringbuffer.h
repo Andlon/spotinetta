@@ -7,6 +7,11 @@ namespace Spotinetta {
 
 namespace detail {
 
+/**
+ *  RingBuffer is a relatively (somewhat specialized) generalized single-writer-single-reader
+ *  ring buffer that uses semaphores for resource management.
+ */
+
 template <class T, qint64 ChunkSize>
 class RingBuffer {
 public:
@@ -22,6 +27,8 @@ public:
     qint64 write(const T * data, qint64 maxSize);
     qint64 read(T * data, qint64 maxSize);
 
+    void clear();
+
 private:
     QScopedArrayPointer<T>  m_data;
     const qint64            m_size;
@@ -33,18 +40,21 @@ private:
     qint64 m_end;
 };
 
+// Returns available space in the buffer
 template <class T, qint64 ChunkSize>
 inline qint64 RingBuffer<T, ChunkSize>::free() const
 {
     return m_used.available();
 }
 
+// Returns "used" space in the buffer - that is, data that is not available
 template <class T, qint64 ChunkSize>
 inline qint64 RingBuffer<T, ChunkSize>::used() const
 {
     return m_free.available();
 }
 
+// Returns the size of the buffer (number of elements)
 template <class T, qint64 ChunkSize>
 inline qint64 RingBuffer<T, ChunkSize>::size() const
 {
@@ -118,6 +128,26 @@ inline qint64 RingBuffer<T, ChunkSize>::read(T * data, qint64 maxSize)
     }
 
     return read;
+}
+
+// Clears the buffer (blocks until everything is read)
+template <class T, qint64 ChunkSize>
+inline void RingBuffer<T, ChunkSize>::clear()
+{
+    // Acquire the entire buffer as if we're writing.
+    // This will block until the buffer is empty
+    // (assumes the reader is continously reading)
+    m_used.acquire(m_size);
+
+    // At this point, the reader will have read all data,
+    // thus all of m_free will also be acquired. Thus, the buffer
+    // is conceptually empty and we have exclusive access.
+    // Reset variables
+    m_start = 0;
+    m_end = 0;
+
+    // Release acquired resources (buffer is cleared and writing is allowed again)
+    m_used.release(m_size);
 }
 
 
