@@ -3,6 +3,7 @@
 #include "definitions.h"
 #include "error.h"
 #include "audiooutput.h"
+#include "track.h"
 
 #include "search.h"
 
@@ -134,7 +135,7 @@ public slots:
     void logout();
     bool relogin();
 
-    bool load(const Track &track);
+    Track load(const Track &track);
     void unload();
     bool play();
     bool pause();

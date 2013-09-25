@@ -276,17 +276,23 @@ bool Session::play()
     return false;
 }
 
-bool Session::load(const Track &track)
+/**
+ * @brief Session::load Loads the given track for playback.
+ * @param track The track to load.
+ * @return The track that was actually loaded. The returned track is invalid if loading failed.
+ */
+
+Track Session::load(const Track &track)
 {
     if (isValid())
     {
         m_error = static_cast<Error>(sp_session_player_load(handle(), track.handle()));
 
         if (m_error == Error::Ok)
-            return true;
+            return track.playableTrack(this);
     }
 
-    return false;
+    return Track();
 }
 
 void Session::unload()
