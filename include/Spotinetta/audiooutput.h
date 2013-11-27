@@ -17,7 +17,7 @@ public:
 
     AudioFormat() : m_sampleType(SampleType::Int16NativeEndian), m_sampleRate(0), m_channels(0) { }
     AudioFormat(int sampleRate, int channels, SampleType sampleType = SampleType::Int16NativeEndian)
-        :   m_sampleRate(sampleRate), m_channels(channels), m_sampleType(sampleType)
+        :   m_sampleType(sampleType), m_sampleRate(sampleRate), m_channels(channels)
     {
         Q_ASSERT_X(m_sampleType == SampleType::Int16NativeEndian,
                    "Spotinetta::AudioFormat", "SampleType not supported.");
