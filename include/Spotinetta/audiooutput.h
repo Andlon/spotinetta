@@ -70,6 +70,7 @@ private:
 
 class AudioOutputInterface {
 public:
+    virtual ~AudioOutputInterface() { }
 
     /**
      * @brief deliver Delivers music data from an internal libspotify thread.

@@ -178,7 +178,7 @@ sp_session * Session::handle() const
     return m_handle.data();
 }
 
-AudioOutputInterface * Session::audioOutput() const
+QSharedPointer<AudioOutputInterface> Session::audioOutput() const
 {
     return m_config.audioOutput;
 }
@@ -423,7 +423,7 @@ void SP_CALLCONV handleMetadataUpdated(sp_session * s) {
 int  SP_CALLCONV handleMusicDelivery(sp_session * s, const sp_audioformat * f, const void * frames, int frameCount) {
     // Retrieve output, if it exists
     Session * session = static_cast<Session *>(sp_session_userdata(s));
-    AudioOutputInterface * output = session->audioOutput();
+    QSharedPointer<AudioOutputInterface> output = session->audioOutput();
 
     if (f->sample_type != SP_SAMPLETYPE_INT16_NATIVE_ENDIAN)
     {

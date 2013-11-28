@@ -58,7 +58,7 @@ struct SessionConfig {
     bool initiallyUnloadPlaylists;
 
     // Spotinetta configuration
-    AudioOutputInterface * audioOutput;
+    QSharedPointer<AudioOutputInterface> audioOutput;
 };
 
 class Session : public QObject {
@@ -95,7 +95,7 @@ public:
     Error           error() const;
     sp_session *    handle() const;
 
-    AudioOutputInterface * audioOutput() const;
+    QSharedPointer<AudioOutputInterface> audioOutput() const;
 
     ConnectionState connectionState() const;
     PlaybackState   playbackState() const;
