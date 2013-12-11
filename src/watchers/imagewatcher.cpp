@@ -64,6 +64,7 @@ void ImageWatcher::unsubscribe()
 
 void ImageWatcher::customEvent(QEvent * event)
 {
+    Q_UNUSED(event);
     Q_ASSERT(event->type() == QEvent::User);
 
     // event->type() is QEvent::User
