@@ -6,6 +6,7 @@
 #include <QtAlgorithms>
 #include <QTimer>
 #include <QDebug>
+#include <QMetaMethod>
 
 namespace Spotinetta {
 
@@ -45,6 +46,8 @@ void SP_CALLCONV handleEndOfTrack(sp_session *);
 //void SP_CALLCONV handleStartPlayback(sp_session *) { }
 //void SP_CALLCONV handleStopPlayback(sp_session *) { }
 void SP_CALLCONV handleSearchComplete(sp_search *, void *);
+void SP_CALLCONV handleAlbumBrowseComplete(sp_albumbrowse *, void *);
+void SP_CALLCONV handleArtistBrowseComplete(sp_artistbrowse *, void *);
 
 }
 
@@ -221,7 +224,7 @@ Image Session::createImageFromLink(const Link &link) const
     return Image();
 }
 
-Search Session::createSearch(const QString &query, int trackOffset, int maxTracks, int albumOffset,
+Search Session::search(const QString &query, int trackOffset, int maxTracks, int albumOffset,
                              int maxAlbums, int artistOffset, int maxArtists, int playlistOffset,
                              int maxPlaylists, Search::Type type) const
 {
@@ -239,6 +242,32 @@ Search Session::createSearch(const QString &query, int trackOffset, int maxTrack
     }
 
     return Search();
+}
+
+AlbumBrowse Session::browse(const Album &album) const
+{
+    if (album.isValid() && isValid())
+    {
+        return AlbumBrowse ( sp_albumbrowse_create(m_handle.data(), album.handle(),
+                                                   &handleAlbumBrowseComplete,
+                                                   static_cast<void *>(const_cast<Session *>(this))) );
+    }
+
+    return AlbumBrowse();
+}
+
+ArtistBrowse Session::browse(const Artist &artist, ArtistBrowseType type) const
+{
+    if (artist.isValid() && isValid())
+    {
+        return ArtistBrowse ( sp_artistbrowse_create(m_handle.data(), artist.handle(),
+                                                     static_cast<sp_artistbrowse_type>(type),
+                                                     &handleArtistBrowseComplete,
+                                                     static_cast<void *>(const_cast<Session *>(this)))
+                                                    );
+    }
+
+    return ArtistBrowse();
 }
 
 void Session::login(const QString &username, const QString &password, bool rememberMe)
@@ -467,6 +496,20 @@ void SP_CALLCONV handleSearchComplete(sp_search * search, void * userdata)
 {
     Session * session = static_cast<Session *>(userdata);
     QCoreApplication::postEvent(session, new Event(Event::Type::SearchCompleteEvent, Error::Ok, QByteArray(), static_cast<void *>(search)));
+}
+
+void SP_CALLCONV handleAlbumBrowseComplete(sp_albumbrowse *, void * userdata)
+{
+    Session * session = static_cast<Session *>(userdata);
+    QMetaMethod signal = QMetaMethod::fromSignal(&Session::objectLoaded);
+    signal.invoke(session, Qt::QueuedConnection);
+}
+
+void SP_CALLCONV handleArtistBrowseComplete(sp_artistbrowse *, void * userdata)
+{
+    Session * session = static_cast<Session *>(userdata);
+    QMetaMethod signal = QMetaMethod::fromSignal(&Session::objectLoaded);
+    signal.invoke(session, Qt::QueuedConnection);
 }
 
 }

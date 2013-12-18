@@ -41,6 +41,11 @@ enum class ImageSize {
     Large = SP_IMAGE_SIZE_LARGE
 };
 
+enum class ArtistBrowseType {
+    NoTracks = SP_ARTISTBROWSE_NO_TRACKS,
+    NoAlbums = SP_ARTISTBROWSE_NO_ALBUMS
+};
+
 void registerTypes();
 
 }

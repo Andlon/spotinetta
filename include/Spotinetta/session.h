@@ -105,11 +105,14 @@ public:
     Image createImage(ImageId id) const;
     Image createImageFromLink(const Link &link) const;
 
-    Search createSearch(const QString &query, int trackOffset, int maxTracks,
+    Search search(const QString &query, int trackOffset, int maxTracks,
                          int albumOffset, int maxAlbums,
                          int artistOffset, int maxArtists,
                          int playlistOffset, int maxPlaylists,
                          Search::Type type) const;
+
+    AlbumBrowse browse(const Album & album) const;
+    ArtistBrowse browse(const Artist & artist, ArtistBrowseType type = ArtistBrowseType::NoTracks) const;
 
 signals:
     void connectionStateChanged();
