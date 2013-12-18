@@ -37,7 +37,6 @@ public:
     explicit Link(const Artist &artist);
     explicit Link(const Track &track, int offset = 0);
     explicit Link(const Album &album);
-    explicit Link(const Playlist &playlist);
 
     Type    type() const;
     QString uri() const;
@@ -45,7 +44,6 @@ public:
     Track       track() const;
     Artist      artist() const;
     Album       album() const;
-    Playlist    playlist() const;
 
     static Link fromAlbumCover(const Album &album, ImageSize size);
     static Link fromArtistPortrait(const Artist &artist, ImageSize size);
