@@ -20,6 +20,31 @@ int Track::popularity() const
     return isValid() ? sp_track_popularity(handle()) : 0;
 }
 
+int Track::disc() const
+{
+    return isValid() ? sp_track_disc(handle()) : 0;
+}
+
+int Track::index() const
+{
+    return isValid() ? sp_track_index(handle()) : 0;
+}
+
+bool Track::isStarred(const Session * session) const
+{
+    return isValid() ? sp_track_is_starred(session->handle(), handle()) : false;
+}
+
+bool Track::isPlaceholder() const
+{
+    return isValid() ? sp_track_is_placeholder(handle()) : false;
+}
+
+bool Track::isLocal(const Session * session) const
+{
+    return isValid() ? sp_track_is_local(session->handle(), handle()) : false;
+}
+
 int Track::artistCount() const
 {
     return isValid()? sp_track_num_artists(handle()) : 0;

@@ -40,6 +40,8 @@ public:
     explicit Track(sp_track * track, bool increment = true) : BasicTrack(track, increment) { }
 
     bool isAutoLinked(const Session * session) const;
+    bool isStarred(const Session * session) const;
+    bool isLocal(const Session * session) const;
     Availability availability(const Session * session) const;
     Track playableTrack(const Session * session) const;
 
@@ -47,6 +49,10 @@ public:
 
     int duration() const;
     int popularity() const;
+    int disc() const;
+    int index() const;
+
+    bool isPlaceholder() const;
 
     Artist artistAt(int index) const;
     ArtistList artists() const;
