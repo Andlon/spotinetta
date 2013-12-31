@@ -32,15 +32,19 @@ public:
 
     int albumCount() const;
     Album albumAt(int index) const;
+    AlbumList albums() const;
 
     int similarArtistCount() const;
     Artist similarArtistAt(int index) const;
+    ArtistList similarArtists() const;
 
     int tophitTrackCount() const;
     Track tophitTrackAt(int index) const;
+    TrackList tophitTracks() const;
 
     int portraitCount() const;
     ImageId portraitAt(int index) const;
+    QList<ImageId> portraits() const;
 };
 
 }
