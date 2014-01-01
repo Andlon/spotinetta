@@ -12,19 +12,19 @@ Link::Link(const QString &uri)
 { }
 
 Link::Link(const Artist &artist)
-    :   BasicLink(sp_link_create_from_artist(artist.handle()), false)
+    :   BasicLink(artist.isValid() ? sp_link_create_from_artist(artist.handle()) : 0, false)
 { }
 
 Link::Link(const Album &album)
-    :   BasicLink(sp_link_create_from_album(album.handle()), false)
+    :   BasicLink(album.isValid() ? sp_link_create_from_album(album.handle()) : 0, false)
 { }
 
 Link::Link(const Track &track, int offset)
-    :   BasicLink(sp_link_create_from_track(track.handle(), offset), false)
+    :   BasicLink(track.isValid() ? sp_link_create_from_track(track.handle(), offset) : 0, false)
 { }
 
 Link::Link(const Image &image)
-    :   BasicLink(sp_link_create_from_image(image.handle()), false)
+    :   BasicLink(image.isValid() ? sp_link_create_from_image(image.handle()) : 0, false)
 { }
 
 Link::Type Link::type() const
@@ -62,21 +62,21 @@ Album Link::album() const
 Link Link::fromAlbumCover(const Album &album, ImageSize size)
 {
     return album.isValid() ?
-                Link(sp_link_create_from_album_cover(album.handle(), static_cast<sp_image_size>(size)))
+                Link(sp_link_create_from_album_cover(album.handle(), static_cast<sp_image_size>(size)), false)
               : Link();
 }
 
 Link Link::fromArtistPortrait(const Artist &artist, ImageSize size)
 {
     return artist.isValid() ?
-                Link(sp_link_create_from_artist_portrait(artist.handle(), static_cast<sp_image_size>(size)))
+                Link(sp_link_create_from_artist_portrait(artist.handle(), static_cast<sp_image_size>(size)), false)
               : Link();
 }
 
 Link Link::fromArtistBrowsePortrait(const ArtistBrowse &browse, int index)
 {
     return browse.isValid() ?
-                Link(sp_link_create_from_artistbrowse_portrait(browse.handle(), index))
+                Link(sp_link_create_from_artistbrowse_portrait(browse.handle(), index), false)
               : Link();
 
 }
