@@ -152,8 +152,6 @@ Session::~Session()
     // Reset playlistcontainer so that the deref function is not called
     // after session destruction
     m_rootContainer = PlaylistContainer();
-
-
 }
 
 void Session::processEvents()
@@ -513,6 +511,5 @@ void SP_CALLCONV handleArtistBrowseComplete(sp_artistbrowse *, void * userdata)
 }
 
 }
-
 
 }
