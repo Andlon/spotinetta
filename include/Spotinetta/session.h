@@ -137,6 +137,7 @@ public slots:
     void login(const QString &username, const QString &password, bool rememberMe = false);
     void logout();
     bool relogin();
+    void forgetMe();
 
     Track load(const Track &track);
     void unload();

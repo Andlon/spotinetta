@@ -288,6 +288,12 @@ bool Session::relogin()
     return err == Error::Ok;
 }
 
+void Session::forgetMe()
+{
+    if (isValid())
+        sp_session_forget_me(handle());
+}
+
 bool Session::play()
 {
     if (isValid())
