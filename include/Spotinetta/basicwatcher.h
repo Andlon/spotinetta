@@ -36,7 +36,10 @@ private:
 template <class WatchedType, void (Session::*LoadedSignal)()>
 inline BasicWatcher<WatchedType, LoadedSignal>::BasicWatcher(const Session * session, QObject * parent)
     :   LoadedSignalProvider(parent), m_session(session)
-{ }
+{
+    Q_ASSERT_X(!m_session.isNull(), "BasicWatcher::BasicWatcher", "Null session");
+    Q_ASSERT_X(m_session->thread() == this->thread(), "BasicWatcher::BasicWatcher", "Watcher and session do not live in the same thread");
+}
 
 template <class WatchedType, void (Session::*LoadedSignal)()>
 inline WatchedType BasicWatcher<WatchedType, LoadedSignal>::watched() const
