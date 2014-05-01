@@ -8,7 +8,8 @@ QT       -= gui
 
 TARGET = spotinetta
 TEMPLATE = lib
-CONFIG += staticlib c++11 debug_and_release
+
+CONFIG += staticlib c++11 debug_and_release build_all
 
 RCC_DIR = "build/rcc"
 UI_DIR = "build/uic"
