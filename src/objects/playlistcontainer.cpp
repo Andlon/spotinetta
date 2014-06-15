@@ -28,4 +28,9 @@ User PlaylistContainer::owner() const
     return isValid() ? User(sp_playlistcontainer_owner(handle())) : User();
 }
 
+bool Spotinetta::PlaylistContainer::isPlaylist(int index) const
+{
+    return isValid() && sp_playlistcontainer_playlist_type(handle(), index) == SP_PLAYLIST_TYPE_PLAYLIST;
+}
+
 }

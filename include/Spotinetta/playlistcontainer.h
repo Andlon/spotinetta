@@ -26,6 +26,10 @@ public:
     int playlistCount() const;
     Playlist playlistAt(int index) const;
     PlaylistList playlists() const;
+
+    /* This is slightly hacked in as a means to determine whether the playlist is an actual playlist
+     * or a folder (or something else), which Sonetta does not yet support. */
+    bool isPlaylist(int index) const;
 };
 
 }
